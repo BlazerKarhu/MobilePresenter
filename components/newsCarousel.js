@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions } from 'react-native';
-const {width} = Dimensions.get("window")
 
 const mediaArray = [
     {
@@ -34,20 +33,31 @@ const mediaArray = [
 
 const newsCarousel = () => {
 
+  const windowHeight = Dimensions.get('window').height;
   const [layout, setLayout] = useState({
     width: 0,
     height: 0,
   });
 
-  const windowHeight = Dimensions.get('window').height;
+  const [interval, setInterval] = React.useState(0);
+
+  const carouselRef = React.useRef()
+
 
     return (
+      <View style={{
+        flex: 1,
+        flexDirection: "column"
+        }}>
         <FlatList
         horizontal
         pagingEnabled
         onLayout={(event) => setLayout(event.nativeEvent.layout)}
+        onMomentumScrollEnd={(event) => {let i = Math.round((event.nativeEvent.contentOffset.x / event.nativeEvent.contentSize.width) / (1/mediaArray.length));setInterval(i)}}
         data={mediaArray}
-        style={{flexGrow: 0,maxHeight: windowHeight/1.5}}
+        ref = {carouselRef}
+        showsHorizontalScrollIndicator={false}
+        style={{maxHeight: windowHeight/1.5}}
         renderItem={({item}) => {
           return (
             <TouchableOpacity
@@ -66,8 +76,35 @@ const newsCarousel = () => {
           )
         }}
         />
+        {bullets(carouselRef, interval, setInterval)}
+      
+      </View> 
  
     )
 }
+
+const bullets = (carouselRef, interval, setInterval) => {
+  return <View
+  style={{
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  }}
+>{mediaArray.map(function(image){
+    return <Text
+    key={image.key}
+    onPress={() => {
+      setInterval(image.key)
+      carouselRef.current.scrollToIndex({animated: true, index: image.key});
+    }}
+    style={[bulletstyle,{ opacity: interval == image.key ? 0.5 : 0.2}]}
+  > &bull; </Text>
+  })}</View>
+}
+
+const bulletstyle = StyleSheet.create({
+  fontSize: 50,
+  paddingHorizontal: 10
+});
 
 export default newsCarousel

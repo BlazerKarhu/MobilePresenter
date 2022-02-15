@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions } from 'react-native';
-
 const {width} = Dimensions.get("window")
 
 const mediaArray = [
@@ -35,40 +34,40 @@ const mediaArray = [
 
 const newsCarousel = () => {
 
+  const [layout, setLayout] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  const windowHeight = Dimensions.get('window').height;
+
     return (
         <FlatList
         horizontal
         pagingEnabled
+        onLayout={(event) => setLayout(event.nativeEvent.layout)}
         data={mediaArray}
+        style={{flexGrow: 0,maxHeight: windowHeight/1.5}}
         renderItem={({item}) => {
           return (
             <TouchableOpacity
-              style={styles.carousel}>
+              style={{width: layout.width, alignItems: 'center'}}>
                <Image
                     style={{
-                        flex: 1,
-                        width: undefined,
-                        height: undefined,
                         aspectRatio: 1,
-                        resizeMode: 'contain',
-                        borderRadius: 5}}
+                        width: layout.width,
+                        maxHeight: windowHeight/1.5,
+                        resizeMode: 'stretch'
+                      }}
             source={{uri: item.thumbnails.w160}}
           />
-          <View>
             <Text>{item.title}</Text>
-          </View>
             </TouchableOpacity>
           )
         }}
         />
+ 
     )
 }
-const styles = StyleSheet.create({
-    carousel: {
-        width,
-        alignItems: 'center',
-        flex: 2,
-    }
-  });
 
 export default newsCarousel

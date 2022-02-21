@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions } from 'react-native';
 
 const mediaArray = [
@@ -40,18 +40,30 @@ const mediaArray = [
     },
   ];
 
+const targetwidth = 500 // When a single view should be cut off width wise. Target width for each item.
+
 const NewsList = () => {
+  const window = Dimensions.get('window'); // Used only for starting values to have one less redraw
+  const [layout, setLayout] = useState({
+    width: window.width,
+    height: window.height,
+  });
+
+  const columns = Math.round(layout.width/targetwidth)
 
     return (
         <FlatList
         style={styles.newsList}
         data={mediaArray}
+        onLayout={(e) => setLayout({...e.nativeEvent.layout})}
+        key={columns}
+        numColumns={columns}
         renderItem={({item}) => {
           return (
             <TouchableOpacity
               style={styles.newsItem}>
                <Image
-            style={{width: 100, height: 100}}
+            style={{width: layout.width/columns, aspectRatio: layout.width / targetwidth}}
             source={{uri: item.thumbnails.w160}}
           />
           <View>
@@ -68,10 +80,11 @@ const styles = StyleSheet.create({
   newsList: {
     flex: 1,
     padding: 10,
-    margin: 20,
+    margin: 20
   },
   newsItem: {
-    marginBottom: 10,
+    marginVertical: 10,
+    marginHorizontal: 10
   },
   });
 

@@ -11,7 +11,7 @@ const App= () => {
       <Text>You've got mail!</Text>
       <NewsCarousel />
       <NewsList />
-      <StatusBar style="auto" />
+      <StatusBar style='auto' />
     </View>
   );
 }
@@ -19,7 +19,7 @@ const App= () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
     backgroundColor: '#fff',
     justifyContent: 'center',
     marginTop: 20,

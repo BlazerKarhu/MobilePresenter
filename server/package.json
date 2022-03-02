@@ -4,7 +4,7 @@
   "description": "Serves posts via endpoints.",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js || npm install && node server.js"
   },
   "author": "",
   "license": "ISC",

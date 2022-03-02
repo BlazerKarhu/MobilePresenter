@@ -4,14 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aed2df3b-e216-49d1-bec3-7b3b5a152371" name="Default Changelist" comment="Create initial server files and project init script &amp; rename app" />
+    <list default="true" id="aed2df3b-e216-49d1-bec3-7b3b5a152371" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/EmailMobilePresenter" />
   </component>
   <component name="ProjectId" id="24vDZq1gLDUpuLKzOAFno9eHmQ3" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -90,28 +90,6 @@
       <option name="presentableId" value="Default" />
       <updated>1644502224398</updated>
     </task>
-    <task id="LOCAL−00001" summary="Create initial server files and project init script &amp; rename app">
-      <created>1646214085710</created>
-      <option name="number" value="LOCAL−00001" />
-      <option name="presentableId" value="LOCAL−00001" />
-      <updated>1646214085710</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Create initial server files and project init script &amp; rename app" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create initial server files and project init script &amp; rename app" />
   </component>
 </project>

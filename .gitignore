@@ -1,24 +1,25 @@
-node_modules/
-.expo/
-dist/
-npm-debug.*
+**/node_modules/
+**/.expo/
+**/dist/
+**/npm-debug.*
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
 *.orig.*
-web-build/
+**/web-build/
 
 # macOS
 .DS_Store
 
 # User-specific stuff
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
-.idea/**/dictionaries
-.idea/**/shelf
+**/.idea/**/workspace.xml
+**/.idea/**/tasks.xml
+**/.idea/**/usage.statistics.xml
+**/.idea/**/dictionaries
+**/.idea/**/shelf
+**/.idea/**/vcs.xml
 
 # Custom
 *.xlsx

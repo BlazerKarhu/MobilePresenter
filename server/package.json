@@ -1,0 +1,14 @@
+{
+  "name": "presenterserver",
+  "version": "1.0.0",
+  "description": "Serves posts via endpoints.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}

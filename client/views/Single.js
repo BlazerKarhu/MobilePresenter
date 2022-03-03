@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, SafeAreaView, Text} from 'react-native';
+import { StyleSheet, SafeAreaView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 
 const Single = () => {
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 });
 
 Single.propTypes = {
-    navigation: PropTypes.object,
+  navigation: PropTypes.object,
 };
 
 export default Single;

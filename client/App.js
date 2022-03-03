@@ -5,11 +5,11 @@ import Home from './views/Home';
 
 
 
-const App= () => {
+const App = () => {
   return (
     <>
-    <Navigator></Navigator>
-    <StatusBar style='auto' />
+      <Navigator></Navigator>
+      <StatusBar style='auto' />
     </>
   );
 }

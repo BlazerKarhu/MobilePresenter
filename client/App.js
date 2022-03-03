@@ -1,20 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
-import NewsCarousel from './components/newsCarousel';
-import NewsList from './components/newsList';
-import Fab from './components/fab';
+import Navigator from './navigation/Navigator';
+import Home from './views/Home';
 
 
 
 const App= () => {
   return (
-    <View style={styles.container}>
-      <Text>You've got mail!</Text>
-      <NewsCarousel />
-      <NewsList />
-      <Fab/>
-      <StatusBar style='auto' />
-    </View>
+    <>
+    <Navigator></Navigator>
+    <StatusBar style='auto' />
+    </>
   );
 }
 

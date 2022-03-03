@@ -42,7 +42,8 @@ const mediaArray = [
 
 const targetwidth = 500 // When a single view should be cut off width wise. Target width for each item.
 
-const NewsList = () => {
+const NewsList = (props) => {
+  const {navigation} = props;
   const window = Dimensions.get('window'); // Used only for starting values to have one less redraw
   const [layout, setLayout] = useState({
     width: window.width,
@@ -61,6 +62,11 @@ const NewsList = () => {
         renderItem={({item}) => {
           return (
             <TouchableOpacity
+            onPress={
+              () => {
+                props.navigation.navigate('Single');
+              }
+            }
               style={styles.newsItem}>
                <Image
             style={{width: layout.width/columns, aspectRatio: layout.width / targetwidth}}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions } from 'react-native';
+import PropTypes from 'prop-types';
 
 const mediaArray = [
     {
@@ -31,7 +32,8 @@ const mediaArray = [
     },
   ];
 
-const newsCarousel = () => {
+const newsCarousel = (props) => {
+  const {navigation} = props;
 
   const windowHeight = Dimensions.get('window').height;
   const [layout, setLayout] = useState({
@@ -60,7 +62,12 @@ const newsCarousel = () => {
         style={{maxHeight: windowHeight/1.5}}
         renderItem={({item}) => {
           return (
-            <TouchableOpacity
+            <TouchableOpacity  
+            onPress={
+              () => {
+                props.navigation.navigate('Single');
+              }
+            }
               style={{width: layout.width, alignItems: 'center'}}>
                <Image
                     style={{
@@ -106,5 +113,9 @@ const bulletstyle = StyleSheet.create({
   fontSize: 50,
   paddingHorizontal: 10
 });
+
+newsCarousel.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default newsCarousel

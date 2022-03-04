@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 const StackScreen = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}  />
       <Stack.Screen name="Single" component={Single} />
       <Stack.Screen name="Post" component={Post} />
       <Stack.Screen name="Tags" component={Tags} />

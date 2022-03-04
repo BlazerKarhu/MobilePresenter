@@ -1,45 +1,29 @@
-// https://github.com/santomegonzalo/react-native-floating-action
-import React, { useState } from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions } from 'react-native';
-import { FloatingAction } from "react-native-floating-action";
+import React from 'react';
+import { FloatingAction } from "react-native-floating-action"; // https://github.com/santomegonzalo/react-native-floating-action
+import PropTypes from 'prop-types';
 
-const defaultActions = [
-  {
-    text: "Post",
-    icon: require("../assets/adaptive-icon.png"),
-    name: "bt_post"
-  },
-  {
-    text: "Tag",
-    icon: require("../assets/favicon.png"),
-    name: "bt_tag"
-  }
-];
-
-const fab = () => {
+const fab = (props) => {
+  const { actions, onPressItem } = props;
   // Bug: Horizontal scroll appears on web if actions exists when not opened. Thus state is needed.
-  const [actions, setActions] = React.useState(undefined);
+  const [internalActions, setInternalActions] = React.useState(undefined);
 
   return (
     <FloatingAction
-      actions={actions}
+      actions={internalActions}
       onClose={() => {
-        setActions(undefined)
+        setInternalActions(undefined)
       }}
       onOpen={() => {
-        setActions(defaultActions)
+        setInternalActions(actions)
       }}
-      onPressItem={name => {
-        console.log(`selected button: ${name}`);
-      }}
+      onPressItem={onPressItem}
     />)
 
 }
 
-const styles = StyleSheet.create({
-  container: {
-
-  },
-});
+fab.propTypes = {
+  actions: PropTypes.array,
+  onPressItem: PropTypes.func
+};
 
 export default fab

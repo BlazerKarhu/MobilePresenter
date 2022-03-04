@@ -9,10 +9,9 @@ const Home = (props) => {
   const { navigation } = props;
   return (
     <View style={styles.container}>
-      <Text>You've got mail!</Text>
       <NewsCarousel navigation={navigation} />
       <NewsList navigation={navigation} />
-      <Fab navigation={navigation} />
+      <Fab actions={actions} onPressItem={name => navigation.navigate(name)} />
       <StatusBar style='auto' />
     </View>
   );
@@ -32,5 +31,18 @@ const styles = StyleSheet.create({
 Home.propTypes = {
   navigation: PropTypes.object,
 };
+
+const actions = [
+  {
+    text: "Post",
+    icon: require("../assets/adaptive-icon.png"),
+    name: "Post"
+  },
+  {
+    text: "Tag",
+    icon: require("../assets/favicon.png"),
+    name: "Tags"
+  }
+];
 
 export default Home;

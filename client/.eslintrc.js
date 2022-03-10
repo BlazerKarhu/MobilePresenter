@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-undef 
 module.exports = {
-  'parser': '@babel/eslint-parser',
+  'parser': 'babel-eslint',
   'env': {
     'browser': true,
     'es2020': true,

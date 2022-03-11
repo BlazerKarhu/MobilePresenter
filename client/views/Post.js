@@ -9,7 +9,6 @@ import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor"
 const Post = () => {
   const richText = React.useRef();
   const toolbar = React.useRef();
-  const scroll = React.useRef();
 
   const [pickerPopupVisibility, setPickerPopupVisibility] = useState(false)
   const [fontSize, setFontSize] = useState(1)

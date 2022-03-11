@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
+import React from 'react';
+import { Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { FlatList, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const picker = (props) => {
     const { actions, active, visible, onPressItem, onDone } = props;
@@ -40,37 +40,6 @@ const picker = (props) => {
 
 }
 
-/*
-const styles = StyleSheet.create({
-    modalOverlay: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: 'rgba(0,0,0,0.5)'
-    },
-    modalContent: {
-        backgroundColor: 'white',
-        margin: 40,
-        padding: 5,
-    },
-    item: {
-        fontSize: 16,
-        margin: 20,
-        textAlign: "center",
-        padding: 10,
-        backgroundColor: 'gray',
-        alignItems: 'center',
-    },
-    button: {
-        flexDirection: "row",
-        flex: 1,
-        justifyContent: "center",
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-    },
-});
-*/
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,

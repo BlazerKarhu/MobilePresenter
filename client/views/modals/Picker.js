@@ -3,6 +3,8 @@ import { Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
+// Currently unused, can be deleted if not needed.
+
 const picker = (props) => {
     const { actions, active, visible, onPressItem, onDone } = props;
 

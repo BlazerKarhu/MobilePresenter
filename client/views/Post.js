@@ -1,17 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, SafeAreaView, KeyboardAvoidingView, Text } from 'react-native';
 import PropTypes from 'prop-types';
-
-import PickerModal from '../views/modals/Picker';
 
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
 const Post = () => {
   const richText = React.useRef();
-  const toolbar = React.useRef();
 
-  const [pickerPopupVisibility, setPickerPopupVisibility] = useState(false)
-  const [fontSize, setFontSize] = useState(1)
+  const [sizeSelectorState, setSizeSelectorState] = useState(false)
+
+
 
   const handleInsertVideo = useCallback(() => {
     richText.current?.insertVideo(
@@ -28,11 +26,13 @@ const Post = () => {
     );
   }, []);
 
+
   return (
     <SafeAreaView
       style={{ flex: 1 }}>
       <RichEditor
         style={{ flex: 1 }}
+        onChange={(text) => console.log(text)}
         androidLayerType="software"
         ref={richText}
         initialFocus={true}
@@ -50,16 +50,11 @@ const Post = () => {
         disabled={false}
         initialContentHTML={'Hello <b>World</b> <p>this is a new paragraph</p> <p>this is another new paragraph</p>'}
         useContainer
-        onChange={(text) => {
-          //setContent(sanitize(text, { whiteList: { div: ["style"] } }))
-          console.log("descriptionText:", text);
-        }}
       />
       <KeyboardAvoidingView>
         <RichToolbar
-          ref={toolbar}
           editor={richText}
-          fontSize={() => setPickerPopupVisibility(true)}
+          fontSize={() => setSizeSelectorState(!sizeSelectorState)}
           // Custom buttons
           actions={[
             /* TEXT */
@@ -81,7 +76,6 @@ const Post = () => {
           ]}
         />
         <RichToolbar
-          ref={toolbar}
           editor={richText}
           onPressAddImage={onPressAddImage}
           insertVideo={handleInsertVideo}
@@ -106,15 +100,38 @@ const Post = () => {
             actions.insertImage,
             actions.insertVideo,
           ]}
-          />
+        />
+        {sizeSelectorState &&
+        <RichToolbar
+          editor={richText}
+          actions={[
+            /* CUSTOM */
+            'size1',
+            'size2',
+            'size3',
+            'size4',
+            'size5',
+            'size6',
+            'size7',
+          ]}
+          iconMap={{
+            ['size1']: () => ((<Text>10</Text>)),
+            ['size2']: () => ((<Text>13</Text>)),
+            ['size3']: () => ((<Text>16</Text>)),
+            ['size4']: () => ((<Text>18</Text>)),
+            ['size5']: () => ((<Text>24</Text>)),
+            ['size6']: () => ((<Text>32</Text>)),
+            ['size7']: () => ((<Text>48</Text>)),
+          }}
+          size1={() => { richText.current?.setFontSize(1)}}
+          size2={() => { richText.current?.setFontSize(2)}}
+          size3={() => { richText.current?.setFontSize(3)}}
+          size4={() => { richText.current?.setFontSize(4)}}
+          size5={() => { richText.current?.setFontSize(5)}}
+          size6={() => { richText.current?.setFontSize(6)}}
+          size7={() => { richText.current?.setFontSize(7)}}
+        /> }
       </KeyboardAvoidingView>
-
-      <PickerModal 
-      actions={[1,2,3,4,5,6,7]} 
-      onPressItem={(i) => {richText.current?.setFontSize(i); setFontSize(i);}} 
-      visible={pickerPopupVisibility} 
-      active={fontSize}
-      onDone={() => {setPickerPopupVisibility(false); richText.current?.focusContentEditor();}}/>
     </SafeAreaView>
   );
 };
@@ -128,7 +145,7 @@ const styles = StyleSheet.create({
   editor: {
     backgroundColor: 'white',
     color: 'black'
-  }
+  },
 });
 
 Post.propTypes = {

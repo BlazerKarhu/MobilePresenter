@@ -1,29 +1,62 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, SafeAreaView, KeyboardAvoidingView, Text } from 'react-native';
+import { StyleSheet, SafeAreaView, KeyboardAvoidingView, Text, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 const Post = () => {
   const richText = React.useRef();
 
   const [sizeSelectorState, setSizeSelectorState] = useState(false)
 
+  const onInsertMedia = useCallback(async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3]
+    });
 
+    console.log(result)
 
-  const handleInsertVideo = useCallback(() => {
-    richText.current?.insertVideo(
-      'https://mdn.github.io/learning-area/html/multimedia-and-embedding/video-and-audio-content/rabbit320.mp4',
-      'width: 50%;',
-    );
-  }, []);
+    if (!result.cancelled) {
+      if (result.uri.slice(0, 'data:'.length) != 'data:') { // Uri not given in base64
+      
+        // Get file type for creating new base64 image uri
+        const filename = result.uri.split(/[\\/]/).pop(), extensionDotIndex = filename.lastIndexOf(".");
+        if (filename === "" || extensionDotIndex < 0) {
+          Alert.alert("Filetype error", "Filetype is unrecognized")
+          return;
+        }
+        const filetype = filename.slice(extensionDotIndex + 1);
 
-  const onPressAddImage = useCallback(() => {
-    // insert URL
-    richText.current?.insertImage(
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/100px-React-icon.svg.png',
-      'background: gray;',
-    );
+        if (result.base64 != null) {
+          result.uri = `data:${result.type}/${filetype};base64,${result.base64}`
+        }
+        else { // No base64 given
+          // Not compatible with web, but web is guaranteed to give base64 so this should never be hit.
+          result.uri = `data:${result.type}/${filetype};base64,${await FileSystem.readAsStringAsync(result.uri, { encoding: FileSystem.EncodingType.Base64 })}`
+        }
+      }
+
+      if (result.uri.slice(0,'data:image'.length) == 'data:image') {
+        richText.current?.insertImage(
+          `${result.uri}`,
+          'background: gray;',
+        );
+      }
+      else 
+      {
+        richText.current?.insertVideo(
+          `${result.uri}`,
+          'width: 50%;margin-left: auto;margin-right: auto;',
+        );
+      }
+    }
+
   }, []);
 
 
@@ -33,7 +66,7 @@ const Post = () => {
       <RichEditor
         style={{ flex: 1 }}
         onChange={(text) => console.log(text)}
-        androidLayerType="software"
+        androidLayerType="auto"
         ref={richText}
         initialFocus={true}
         editorStyle={{
@@ -77,8 +110,7 @@ const Post = () => {
         />
         <RichToolbar
           editor={richText}
-          onPressAddImage={onPressAddImage}
-          insertVideo={handleInsertVideo}
+          onPressAddImage={onInsertMedia}
           actions={[
             /* TEXT DECORATION */
 
@@ -98,39 +130,38 @@ const Post = () => {
             /* EXTERNAL */
             actions.insertLink,
             actions.insertImage,
-            actions.insertVideo,
           ]}
         />
         {sizeSelectorState &&
-        <RichToolbar
-          editor={richText}
-          actions={[
-            /* CUSTOM */
-            'size1',
-            'size2',
-            'size3',
-            'size4',
-            'size5',
-            'size6',
-            'size7',
-          ]}
-          iconMap={{
-            ['size1']: () => ((<Text>10</Text>)),
-            ['size2']: () => ((<Text>13</Text>)),
-            ['size3']: () => ((<Text>16</Text>)),
-            ['size4']: () => ((<Text>18</Text>)),
-            ['size5']: () => ((<Text>24</Text>)),
-            ['size6']: () => ((<Text>32</Text>)),
-            ['size7']: () => ((<Text>48</Text>)),
-          }}
-          size1={() => { richText.current?.setFontSize(1)}}
-          size2={() => { richText.current?.setFontSize(2)}}
-          size3={() => { richText.current?.setFontSize(3)}}
-          size4={() => { richText.current?.setFontSize(4)}}
-          size5={() => { richText.current?.setFontSize(5)}}
-          size6={() => { richText.current?.setFontSize(6)}}
-          size7={() => { richText.current?.setFontSize(7)}}
-        /> }
+          <RichToolbar
+            editor={richText}
+            actions={[
+              /* CUSTOM */
+              'size1',
+              'size2',
+              'size3',
+              'size4',
+              'size5',
+              'size6',
+              'size7',
+            ]}
+            iconMap={{
+              ['size1']: () => ((<Text>10</Text>)),
+              ['size2']: () => ((<Text>13</Text>)),
+              ['size3']: () => ((<Text>16</Text>)),
+              ['size4']: () => ((<Text>18</Text>)),
+              ['size5']: () => ((<Text>24</Text>)),
+              ['size6']: () => ((<Text>32</Text>)),
+              ['size7']: () => ((<Text>48</Text>)),
+            }}
+            size1={() => { richText.current?.setFontSize(1) }}
+            size2={() => { richText.current?.setFontSize(2) }}
+            size3={() => { richText.current?.setFontSize(3) }}
+            size4={() => { richText.current?.setFontSize(4) }}
+            size5={() => { richText.current?.setFontSize(5) }}
+            size6={() => { richText.current?.setFontSize(6) }}
+            size7={() => { richText.current?.setFontSize(7) }}
+          />}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

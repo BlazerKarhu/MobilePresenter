@@ -20,8 +20,6 @@ const Post = () => {
       aspect: [4, 3]
     });
 
-    console.log(result)
-
     if (!result.cancelled) {
       if (result.uri.slice(0, 'data:'.length) != 'data:') { // Uri not given in base64
       

@@ -64,7 +64,7 @@ const NewsList = (props) => {
           <TouchableOpacity
             onPress={
               () => {
-                props.navigation.navigate('Single');
+                navigation.navigate('Single', { file: item });
               }
             }
             style={styles.newsItem}>

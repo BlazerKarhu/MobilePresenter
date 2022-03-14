@@ -65,7 +65,7 @@ const newsCarousel = (props) => {
             <TouchableOpacity
               onPress={
                 () => {
-                  props.navigation.navigate('Single');
+                  navigation.navigate('Single', { file: item });
                 }
               }
               style={{ width: layout.width, alignItems: 'center' }}>

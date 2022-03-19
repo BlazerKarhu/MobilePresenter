@@ -64,7 +64,7 @@ const Post = () => {
       <RichEditor
         style={{ flex: 1 }}
         onChange={(text) => console.log(text)}
-        androidLayerType="auto"
+        androidLayerType="hardware"
         ref={richText}
         initialFocus={true}
         editorStyle={{

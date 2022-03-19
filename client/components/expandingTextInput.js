@@ -27,7 +27,7 @@ const ExpandingTextInput = props => {
                 }
             }}
             enablesReturnKeyAutomatically={true}
-            returnKeyType="none"
+            returnKeyType="send"
             blurOnSubmit={true}
         />
     )

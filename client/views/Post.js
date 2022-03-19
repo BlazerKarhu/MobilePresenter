@@ -2,6 +2,9 @@ import React, { useCallback, useState } from 'react';
 import { StyleSheet, SafeAreaView, KeyboardAvoidingView, Text, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 
+import ImageSelector from '../views/modals/ImageSelector'
+import CircleButton from '../components/circleButton';
+
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
@@ -10,6 +13,7 @@ const Post = () => {
   const richText = React.useRef();
 
   const [sizeSelectorState, setSizeSelectorState] = useState(false)
+  const [publishSelectorState, setPublishSelectorState] = useState(false)
 
   const onInsertMedia = useCallback(async () => {
     // No permissions request is necessary for launching the image library
@@ -128,7 +132,20 @@ const Post = () => {
             /* EXTERNAL */
             actions.insertLink,
             actions.insertImage,
+
+            /* FINISH */
+            `publish`
           ]}
+          iconMap={{
+            ['publish']: () => ((<CircleButton text='➤'
+            size={35}
+            color="#2196f3"
+            textColor="white"
+            margin={10}
+            fontSize={20}
+            onPress={() => setPublishSelectorState(true)}
+            />)),
+          }}
         />
         {sizeSelectorState &&
           <RichToolbar
@@ -161,6 +178,7 @@ const Post = () => {
             size7={() => { richText.current?.setFontSize(7) }}
           />}
       </KeyboardAvoidingView>
+      <ImageSelector visible={publishSelectorState} transparent={true} onDone={() => setPublishSelectorState(false)}/>
     </SafeAreaView>
   );
 };

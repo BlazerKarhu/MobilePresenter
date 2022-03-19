@@ -1,7 +1,6 @@
 import React from 'react';
-import { Modal, StyleSheet, Text, Pressable, View } from 'react-native';
+import { Modal, StyleSheet, Text, Pressable, View, TouchableWithoutFeedback, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
-import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 // Currently unused, can be deleted if not needed.
 
@@ -13,6 +12,7 @@ const picker = (props) => {
             <Modal
                 animationType="fade"
                 visible={visible}
+                transparent={true}
                 onPress={() => onDone()}
                 onRequestClose={() => onDone()}
             >

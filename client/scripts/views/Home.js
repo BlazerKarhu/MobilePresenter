@@ -35,12 +35,12 @@ Home.propTypes = {
 const actions = [
   {
     text: "Post",
-    icon: require("../assets/adaptive-icon.png"),
+    icon: require("../../assets/adaptive-icon.png"),
     name: "Post"
   },
   {
     text: "Tag",
-    icon: require("../assets/favicon.png"),
+    icon: require("../../assets/favicon.png"),
     name: "Tags"
   }
 ];

@@ -1,0 +1,23 @@
+import { TouchableOpacity, Text } from 'react-native';
+
+const CircleButton = props => (
+  <TouchableOpacity
+    {...props}
+    style={[props.style, {
+      margin: props.margin,
+      height: props.size,
+      width: props.size,
+      backgroundColor: props.color,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: props.size * 2,
+    }]}
+    onPress={props.onPress}>
+    <Text style={{ color: props.textColor, fontSize: props.fontSize, textAlign: props.textAlign }}>
+      {props.text}
+    </Text>
+  </TouchableOpacity>
+);
+
+
+export default CircleButton

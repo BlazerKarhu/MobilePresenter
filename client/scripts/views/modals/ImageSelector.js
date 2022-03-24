@@ -1,17 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, StyleSheet, Text, Pressable, View, Button, Image, TouchableWithoutFeedback, TextInput, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
 import { Platform } from 'expo-modules-core';
 import ExpandingTextInput from '../../components/expandingTextInput';
 import CircleButton from '../../components/circleButton';
 import selectMedia from '../../helpers/media';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 // Currently unused, can be deleted if not needed.
 
 const picker = (props) => {
     const { actions, active, visible, onPressItem, onDone } = props;
 
+    const [layout, setLayout] = useState({
+        width: 0,
+        height: 0,
+      });
+
     const [image, setImage] = useState(undefined)
+
+    const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
+    const [tags, setTags] = useState({
+        tags: props.tags,
+        selected: [],
+    });
+
+    const setTagsWithSelected = (s) => {
+        setTags({
+            tags: props.tags.filter((tag) => !s.includes(tag.value)),
+            selected: s
+        })
+    }
+
+    const exit = () => {
+        tagsDropdownOpen ? setTagsDropdownOpen(false) : onDone()
+    }
+
 
     return (
         <View>
@@ -21,10 +45,10 @@ const picker = (props) => {
                 style={styles.modalOverlay}
                 visible={visible}
                 onRequestClose={() => onDone()}>
-                <TouchableWithoutFeedback onPress={() => onDone()}>
+                <TouchableWithoutFeedback onPress={tagsDropdownOpen ? undefined : () =>onDone()}>
                     <View style={styles.modalBackdrop} >
                         <TouchableWithoutFeedback onPress={() => { }}>
-                            <View style={styles.modalContent}>
+                            <View style={styles.modalContent} onLayout={(event) => setLayout(event.nativeEvent.layout)}>
                                 <Text style={{ textAlign: 'center', fontSize: 32, margin: 10 }}>Post Preview</Text>
 
                                 <TouchableWithoutFeedback onPress={() => selectMedia((media) => { setImage(media.uri) }, 'image', [2, 1])}>
@@ -33,6 +57,48 @@ const picker = (props) => {
                                     </ImageBackground>
                                 </TouchableWithoutFeedback>
 
+                                <DropDownPicker
+                                zIndex={1}
+                                    open={tagsDropdownOpen}
+                                    /*TODO: Load list and set this with state => loading={loading} */
+                                    items={tags.tags}
+                                    value={tags.selected}
+                                    setOpen={setTagsDropdownOpen}
+                                    // setValue={setValue}
+                                    onSelectItem={(s) => setTagsWithSelected(s.map((t) => t.value))}
+                                    searchable={true}
+                                    multiple={true}
+                                    placeholder='Select tags'
+                                    multipleText='Select tags'
+                                    showTickIcon={false}
+                                    showArrowIcon={false}
+                                    style={{ backgroundColor: '#fff', flexGrow: 0, padding: 10, borderWidth: 0.5, textAlign: 'center' }}
+                                    containerStyle={{ height: 50, width: '90%', maxWidth: '99%', alignSelf: 'center', borderRadius: 10 }}
+           
+                                    dropDownContainerStyle={{
+                                        /*Selector*/
+                                        padding: 10,
+                                    }}
+                                    addCustomItem={true}
+                                    selectedItemContainerStyle={{ /*behind each dropdown item */ }}
+                                    min={0}
+                                />
+
+                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: layout.width }}>
+                                    {tags.selected.map((tag) => (
+                                            <CircleButton text={tag[0].toUpperCase() + tag.slice(1)}
+                                                color="#2196f3"
+                                                key={tag}
+                                                textColor="white"
+                                                margin={10}
+                                                fontSize={20}
+                                                style={{ borderRadius: 1, padding: 10 }}
+                                                onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
+                                            />)
+                                    )}
+                                </View>
+
+
                                 <CircleButton text='➤'
                                     size={35}
                                     color="#2196f3"
@@ -40,7 +106,7 @@ const picker = (props) => {
                                     margin={10}
                                     fontSize={20}
                                     style={styles.modalContentEnd}
-                                    onPress={() => onDone()}
+                                    onPress={() => exit()}
                                 />
                             </View>
                         </TouchableWithoutFeedback>
@@ -60,12 +126,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, padding: 10
     },
     modalContent: {
-        minWidth: "50%", backgroundColor: 'white', margin: 'auto', alignItems: 'center', elevation: 5
+        minWidth: "50%", backgroundColor: '#f8f8f8', margin: 'auto', alignItems: 'center', elevation: 10
     },
     modalContentTop: { justifyContent: 'flex-start' },
     image: { width: '100%', aspectRatio: 2 / 1, backgroundColor: 'lightblue', elevation: 5, margin: 10, borderWidth: 0.5, borderColor: 'gray' },
     modalContentEnd: { alignSelf: 'flex-end', elevation: 5 }
 });
+
+picker.defaultProps = {
+    tags:
+        [
+            { label: 'Announcements', value: 'announcements' },
+            { label: 'News', value: 'news' },
+            { label: 'Summary', value: 'summary' },
+            { label: 'World', value: 'world' },
+            { label: 'Insider', value: 'insider' },
+            { label: 'Misc', value: 'misc' },
+        ]
+}
 
 
 picker.propTypes = {
@@ -74,3 +152,4 @@ picker.propTypes = {
 };
 
 export default picker
+

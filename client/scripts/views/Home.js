@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 const Home = (props) => {
   const { navigation } = props;
   const [loginForm, setLoginForm] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(true)
   console.log("Logged in", loggedIn)
   return (
     <View style={styles.container}>

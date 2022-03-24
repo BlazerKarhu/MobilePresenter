@@ -32,10 +32,6 @@ const picker = (props) => {
         })
     }
 
-    const exit = () => {
-        tagsDropdownOpen ? setTagsDropdownOpen(false) : onDone()
-    }
-
 
     return (
         <View>
@@ -45,7 +41,7 @@ const picker = (props) => {
                 style={styles.modalOverlay}
                 visible={visible}
                 onRequestClose={() => onDone()}>
-                <TouchableWithoutFeedback onPress={tagsDropdownOpen ? undefined : () =>onDone()}>
+                <TouchableWithoutFeedback onPress={() => onDone()}>
                     <View style={styles.modalBackdrop} >
                         <TouchableWithoutFeedback onPress={() => { }}>
                             <View style={styles.modalContent} onLayout={(event) => setLayout(event.nativeEvent.layout)}>
@@ -58,7 +54,6 @@ const picker = (props) => {
                                 </TouchableWithoutFeedback>
 
                                 <DropDownPicker
-                                zIndex={1}
                                     open={tagsDropdownOpen}
                                     /*TODO: Load list and set this with state => loading={loading} */
                                     items={tags.tags}
@@ -70,9 +65,10 @@ const picker = (props) => {
                                     multiple={true}
                                     placeholder='Select tags'
                                     multipleText='Select tags'
+                                    dropDownDirection="TOP"
                                     showTickIcon={false}
                                     showArrowIcon={false}
-                                    style={{ backgroundColor: '#fff', flexGrow: 0, padding: 10, borderWidth: 0.5, textAlign: 'center' }}
+                                    style={{ backgroundColor: '#fff', padding: 10, textAlign: 'center', elevation: 20 }}
                                     containerStyle={{ height: 50, width: '90%', maxWidth: '99%', alignSelf: 'center', borderRadius: 10 }}
            
                                     dropDownContainerStyle={{
@@ -106,7 +102,7 @@ const picker = (props) => {
                                     margin={10}
                                     fontSize={20}
                                     style={styles.modalContentEnd}
-                                    onPress={() => exit()}
+                                    onPress={() => onDone()}
                                 />
                             </View>
                         </TouchableWithoutFeedback>
@@ -126,10 +122,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, padding: 10
     },
     modalContent: {
-        minWidth: "50%", backgroundColor: '#f8f8f8', margin: 'auto', alignItems: 'center', elevation: 10
+        minWidth: "50%", backgroundColor: '#f8f8f8', margin: 'auto', alignItems: 'center'
     },
     modalContentTop: { justifyContent: 'flex-start' },
-    image: { width: '100%', aspectRatio: 2 / 1, backgroundColor: 'lightblue', elevation: 5, margin: 10, borderWidth: 0.5, borderColor: 'gray' },
+    image: { width: '100%', aspectRatio: 2 / 1, backgroundColor: 'lightblue', margin: 10, borderWidth: 0.5, borderColor: 'gray' },
     modalContentEnd: { alignSelf: 'flex-end', elevation: 5 }
 });
 

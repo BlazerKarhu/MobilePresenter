@@ -10,7 +10,7 @@ const CircleButton = props => (
       backgroundColor: props.color,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: props.size * 2,
+      borderRadius: props.size ? props.size * 2 : undefined,
     }]}
     onPress={props.onPress}>
     <Text style={{ color: props.textColor, fontSize: props.fontSize, textAlign: props.textAlign }}>

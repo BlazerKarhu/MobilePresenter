@@ -34,8 +34,41 @@ app.listen(3000, () => {
       });
 });
 
+    //GET posts
 
-// //POST an user
+    app.get("/api/posts", (req, res, next) => {
+        var sql = "select * from posts"
+        var params = []
+        db.all(sql, params, (err, rows) => {
+            if (err) {
+              res.status(400).json({"error":err.message});
+              return;
+            }
+            res.json({
+                "message":"success",
+                "data":rows
+            })
+          });
+    });
+
+    //GET tags
+
+    app.get("/api/tags", (req, res, next) => {
+        var sql = "select * from tags"
+        var params = []
+        db.all(sql, params, (err, rows) => {
+            if (err) {
+              res.status(400).json({"error":err.message});
+              return;
+            }
+            res.json({
+                "message":"success",
+                "data":rows
+            })
+          });
+    });
+
+//POST an user
 
 app.post("/api/users/", (req, res, next) => {
   var errors=[]
@@ -68,6 +101,73 @@ app.post("/api/users/", (req, res, next) => {
       })
   });
 })
+
+//POST a posts
+
+app.post("/api/posts/", (req, res, next) => {
+    var errors=[]
+    if (!req.body.Title){
+        errors.push("No Title specified");
+    }
+    if (!req.body.image){
+        errors.push("No image specified");
+    }
+    if (!req.body.Html){
+        errors.push("No Html specified");
+    }
+    if (errors.length){
+        res.status(400).json({"error":errors.join(",")});
+        return;
+    }
+    var data = {
+        Title: req.body.Title,
+        image: req.body.image,
+        Html: req.body.Html,
+    }
+    var sql ='INSERT INTO posts (Title, image, Html) VALUES (?,?,?)'
+    var params =[data.Title, data.image, data.Html]
+    db.run(sql, params, function (err, result) {
+        if (err){
+            res.status(400).json({"error": err.message})
+            return;
+        }
+        res.json({
+            "message": "success",
+            "data": data,
+            "id" : this.lastID
+        })
+    });
+  })
+  
+//POST a tag
+
+app.post("/api/tags/", (req, res, next) => {
+    var errors=[]
+    if (!req.body.tag){
+        errors.push("No tag specified");
+    }
+    if (errors.length){
+        res.status(400).json({"error":errors.join(",")});
+        return;
+    }
+    var data = {
+        postId: req.body.postId,
+        tag: req.body.tag,
+    }
+    var sql ='INSERT INTO tags (postId, tag) VALUES (?,?)'
+    var params =[data.postId, data.tag]
+    db.run(sql, params, function (err, result) {
+        if (err){
+            res.status(400).json({"error": err.message})
+            return;
+        }
+        res.json({
+            "message": "success",
+            "data": data,
+            "id" : this.lastID
+        })
+    });
+  })
 
 //UPDATE an user
 

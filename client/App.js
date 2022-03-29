@@ -9,9 +9,12 @@ const App = () => {
     <>
       <Navigator></Navigator>
       <StatusBar style='auto' />
+      
     </>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

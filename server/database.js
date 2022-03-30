@@ -30,13 +30,19 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
 
         db.run(`CREATE TABLE posts (
             postId INTEGER PRIMARY KEY AUTOINCREMENT,
-            Title text, 
-            image blob, 
-            Html text
+            title text, 
+            image text,
+            html text
             )`,
             (err) => {
                 if (err) {
                     // Table already created
+                }else{
+                    // Table just created, creating some rows
+                    var insert = 'INSERT INTO posts (title, image, html) VALUES (?,?,?)'
+                    db.run(insert, ["kitten 1","https://placekitten.com/489/163","<center>kitten 1</center>"])
+                    db.run(insert, ["kitten 2","https://placekitten.com/490/164","<center>kitten 2</center>"])
+                    db.run(insert, ["kitten 3","https://placekitten.com/491/163","<center>kitten 3</center>"])
                 }
             });
 
@@ -49,6 +55,15 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                 (err) => {
                     if (err) {
                         // Table already created
+                    }
+                    else{
+                        // Table just created, creating some rows
+                    var insert = 'INSERT INTO tags (postId, tag) VALUES (?,?)'
+                    db.run(insert, [1, "Kitten"])
+                    db.run(insert, [1, "Yarn"])
+                    db.run(insert, [2, "Kitten"])
+                    db.run(insert, [2, "Stare"])
+                    db.run(insert, [3, "Kitten"])
                     }
                 });
     }

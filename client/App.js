@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
-import Navigator from './scripts/navigation/Navigator';
+import Navigator from './scripts/utils/navigator';
 
 
 

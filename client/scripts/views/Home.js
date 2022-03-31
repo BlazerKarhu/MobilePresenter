@@ -29,9 +29,7 @@ const Home = (props) => {
           <View style={styles.buttonView} >
             <Button
               title='Login'
-              onPress={() => {
-                setLoginForm(!loginForm)
-              }}
+              onPress={() => {setLoginForm(!loginForm)}}
             />
           </View>
         )}

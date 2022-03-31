@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Platform } from 'expo-modules-core';
 import ExpandingTextInput from '../../components/expandingTextInput';
 import CircleButton from '../../components/circleButton';
-import selectMedia from '../../helpers/media';
+import selectMedia from '../../utils/select';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 // Currently unused, can be deleted if not needed.

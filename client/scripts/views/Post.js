@@ -6,7 +6,7 @@ import ImageSelector from '../views/modals/ImageSelector'
 import CircleButton from '../components/circleButton';
 
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
-import selectMedia from '../helpers/media';
+import selectMedia from '../utils/select';
 
 const Post = () => {
   const richText = React.useRef();

@@ -9,8 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "md5": "^2.3.0",
+    "njwt": "^1.2.0",
+    "secure-random": "^1.1.2",
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {

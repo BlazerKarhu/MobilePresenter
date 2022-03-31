@@ -1,5 +1,5 @@
 const express = require('express')
-var db = require("../database.js")
+var db = require("../util/database")
 const router = express.Router()
 
 // Get tags

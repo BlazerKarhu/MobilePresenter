@@ -1,3 +1,45 @@
+const express = require('express')
+var nJwt = require('njwt');
+
+const { username, password, salt } = require('../app.config');
+const router = express.Router()
+
+// Administrative login
+router.post("/", (req, res, next) => {
+    var errors=[]
+    if (!req.body.password){
+        errors.push("No password specified");
+    }
+    if (!req.body.username){
+        errors.push("No username specified");
+    }
+    if(req.body.password != password || req.body.username != username){
+        errors.push("Unauthorized");
+    }
+    if (errors.length){
+        res.status(400).json({"error":errors.join(",")});
+        return;
+    }
+
+    var data = {
+        username: req.body.username,
+        password : req.body.password
+    }
+
+    var jwt = nJwt.create(data,salt);
+
+    var token = jwt.compact();
+
+    res.json({
+        "message": "success",
+        "data": {token: token},
+        "id" : this.lastID
+    })
+
+  })
+
+module.exports = router
+
 /**
    //GET users
 

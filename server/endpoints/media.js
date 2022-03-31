@@ -1,5 +1,8 @@
 const express = require('express')
+
+const auth = require('../util/auth')
 const fs = require('fs');
+
 const router = express.Router()
 
 /**
@@ -11,6 +14,8 @@ const router = express.Router()
 
 // Get media
 router.use("/", express.static('public'))
+
+router.use(auth)
 
 // Add media
 router.post("/", (req, res, next) => {

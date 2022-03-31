@@ -35,12 +35,14 @@ const login = async (username, password, onDone = () => {}) => {
     }
 }
 
-const logout = async () => {
+const logout = () => {
     token = ""
     lastUsername = undefined
     lastPassword = undefined
 }
 
+const loggedIn = () => token.length > 0 && lastUsername != undefined && lastPassword != undefined 
 
 
-export default {token, lastUsername, lastPassword, login}
+
+export default {token, lastUsername, lastPassword, login, logout, loggedIn}

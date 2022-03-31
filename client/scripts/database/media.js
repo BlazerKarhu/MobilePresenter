@@ -25,9 +25,12 @@ const uploadMedia = async (base64, onDone) => {
 
     if (result.message != undefined && result.message == "success") {
         const path = result.data.path
-        onDone(path.slice(0, "http".length) == "http" ? path : baseUrl + path)
+        const ret = path.slice(0, "http".length) == "http" ? path : baseUrl + path
+        onDone(ret)
+        return ret
     } else {
-        onDone(false)
+        onDone(undefined)
+        return undefined
     }
 }
 

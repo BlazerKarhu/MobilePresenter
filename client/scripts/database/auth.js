@@ -2,6 +2,8 @@ import { baseUrl } from '../../app.config'
 import doFetch from '../utils/fetch'
 
 export var token = ""
+export var lastUsername = undefined
+export var lastPassword = undefined
 
 /**
  * Logs the the user in with the specified credentials. 
@@ -22,13 +24,17 @@ const login = async (username, password, onDone = () => {}) => {
     console.log(result)
 
     if (result.message != undefined && result.message == "success") {
+        lastUsername = username;
+        lastPassword = password;
         token = result.data.token
         onDone(!!token.length)
+        return !!token.length
     } else {
         onDone(false)
+        return false
     }
 }
 
 
 
-export default {token, login}
+export default {token, lastUsername, lastPassword, login}

@@ -7,6 +7,8 @@ import LoginModal from '../views/modals/LoginModal';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
+import media from '../database/media';
+
 const Home = (props) => {
   const { navigation } = props;
   const [loginForm, setLoginForm] = useState(false);
@@ -21,15 +23,19 @@ const Home = (props) => {
           <><View style={styles.buttonView}>
             <Button
               title='Logout'
-              onPress={() => {
-                setLoggedIn(false);
-              } } />
+              onPress={() => {setLoggedIn(false)}} />
           </View><Fab actions={actions} onPressItem={name => navigation.navigate(name)} /></>
         ) : (
           <View style={styles.buttonView} >
             <Button
               title='Login'
-              onPress={() => {setLoginForm(!loginForm)}}
+              onPress={() => {
+                media.uploadMedia(`data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII`,(path) =>  
+                {
+                  console.log(path)
+                });
+                setLoginForm(!loginForm)
+              }}
             />
           </View>
         )}

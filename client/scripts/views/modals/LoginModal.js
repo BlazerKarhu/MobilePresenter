@@ -37,7 +37,7 @@ const picker = (props) => {
                 <TouchableWithoutFeedback onPress={() => onClose()}>
                     <View style={styles.modalBackdrop} >
                         <TouchableWithoutFeedback onPress={() => { }}>
-                            <View style={styles.modalContent}>
+                            <View style={[styles.modalContent, {minWidth: "20%"}]}>
                                 <Text style={{ textAlign: 'center', fontSize: 32, margin: 10 }}>Login</Text>
                                 <TextInput
                                     style={styles.input}
@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
     modalOverlay: {
     },
     modalBackdrop: {
-        backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, padding: 10
+        backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, alignContent: 'center'
     },
     modalContent: {
-        minWidth: "50%", backgroundColor: 'white', margin: 'auto', alignItems: 'center', elevation: 5
+        backgroundColor: '#f8f8f8', margin: 'auto', alignItems: 'center'
     },
     modalContentTop: { justifyContent: 'flex-start' },
     image: { width: '100%', aspectRatio: 2 / 1, backgroundColor: 'lightblue', elevation: 5, margin: 10, borderWidth: 0.5, borderColor: 'gray' },

@@ -32,6 +32,11 @@ const picker = (props) => {
         })
     }
 
+    const onExit = () => {
+        setTagsWithSelected([]);
+        onDone();
+    }
+
 
     return (
         <View>
@@ -40,16 +45,16 @@ const picker = (props) => {
                 transparent={true}
                 style={styles.modalOverlay}
                 visible={visible}
-                onRequestClose={() => onDone()}>
-                <TouchableWithoutFeedback onPress={() => onDone()}>
+                onRequestClose={() => onExit()}>
+                <TouchableWithoutFeedback onPress={() => onExit()}>
                     <View style={styles.modalBackdrop} >
                         <TouchableWithoutFeedback onPress={() => { }}>
-                            <View style={styles.modalContent} onLayout={(event) => setLayout(event.nativeEvent.layout)}>
+                            <View style={[styles.modalContent, {minWidth: "50%"}]} onLayout={(event) => setLayout(event.nativeEvent.layout)}>
                                 <Text style={{ textAlign: 'center', fontSize: 32, margin: 10 }}>Post Preview</Text>
 
                                 <TouchableWithoutFeedback onPress={() => selectMedia((media) => { setImage(media.uri) }, 'image', [2, 1])}>
                                     <ImageBackground source={{ uri: image }} style={styles.image}>
-                                        <ExpandingTextInput placeholder={'Title'} style={{ maxHeight: '50%' }} maxLength={100} />
+                                        <ExpandingTextInput placeholder={'Title'} style={{ maxHeight: '40%' }} maxLength={100} />
                                     </ImageBackground>
                                 </TouchableWithoutFeedback>
 
@@ -68,13 +73,30 @@ const picker = (props) => {
                                     dropDownDirection="TOP"
                                     showTickIcon={false}
                                     showArrowIcon={false}
-                                    style={{ backgroundColor: '#fff', padding: 10, textAlign: 'center', elevation: 20 }}
-                                    containerStyle={{ height: 50, width: '90%', maxWidth: '99%', alignSelf: 'center', borderRadius: 10 }}
+                                    style={{ backgroundColor: '#fff', borderColor: 'gray', borderWidth: 0.5, padding: 15, textAlign: 'center', elevation: 20 }}
+                                    containerStyle={{ height: 50, width: '90%', maxWidth: '99%', alignSelf: 'center' }}
+                                    listItemContainerStyle={{
+                                        padding: 10,
+                                      }}
            
                                     dropDownContainerStyle={{
                                         /*Selector*/
-                                        padding: 10,
+                                        borderRadius: 0,
+                                        borderColor: 'gray',
+                                        borderWidth: 0,
+                                        borderLeftWidth: 0.5,
+                                        borderRightWidth: 0.5,
+                                        borderTopWidth: 0.5
                                     }}
+                                    searchTextInputStyle={{
+                                        borderRadius: 0,
+                                        borderColor: 'gray',
+                                        borderWidth: 0,
+                                        borderBottomWidth: 0.5
+                                      }}
+
+               
+             
                                     addCustomItem={true}
                                     selectedItemContainerStyle={{ /*behind each dropdown item */ }}
                                     min={0}
@@ -102,7 +124,7 @@ const picker = (props) => {
                                     margin={10}
                                     fontSize={20}
                                     style={styles.modalContentEnd}
-                                    onPress={() => onDone()}
+                                    onPress={() => onExit()}
                                 />
                             </View>
                         </TouchableWithoutFeedback>
@@ -119,10 +141,10 @@ const styles = StyleSheet.create({
     modalOverlay: {
     },
     modalBackdrop: {
-        backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, padding: 10
+        backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, alignContent: 'center'
     },
     modalContent: {
-        minWidth: "50%", backgroundColor: '#f8f8f8', margin: 'auto', alignItems: 'center'
+        backgroundColor: '#f8f8f8', margin: 'auto', alignItems: 'center', maxWidth: '100%'
     },
     modalContentTop: { justifyContent: 'flex-start' },
     image: { width: '100%', aspectRatio: 2 / 1, backgroundColor: 'lightblue', margin: 10, borderWidth: 0.5, borderColor: 'gray' },

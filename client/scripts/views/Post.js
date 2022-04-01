@@ -2,13 +2,21 @@ import React, { useCallback, useState } from 'react';
 import { StyleSheet, SafeAreaView, KeyboardAvoidingView, Text, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 
-import ImageSelector from '../views/modals/ImageSelector'
+import PreviewModal from '../views/modals/PreviewModal'
 import CircleButton from '../components/circleButton';
 
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import selectMedia from '../utils/select';
 
 const Post = () => {
+  const [layout, setLayout] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  const tlbarBtnSize = 36
+  const tlbarMaxBtnCount = 11
+
   const richText = React.useRef();
 
   const [sizeSelectorState, setSizeSelectorState] = useState(false)
@@ -19,7 +27,8 @@ const Post = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1 }}>
+      onLayout={(event) => setLayout(event.nativeEvent.layout)}
+      style={{ width: '100%', height: '100%' }}>
       <RichEditor
         style={{ flex: 1 }}
         onChange={(text) => console.log(text)}
@@ -44,6 +53,8 @@ const Post = () => {
       <KeyboardAvoidingView>
         <RichToolbar
           editor={richText}
+          style={styles.toolbar}
+          flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize*tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
           fontSize={() => setSizeSelectorState(!sizeSelectorState)}
           // Custom buttons
           actions={[
@@ -67,8 +78,10 @@ const Post = () => {
         />
         <RichToolbar
           editor={richText}
+          style={styles.toolbar}
+          flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize*tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
           onPressAddImage={() => selectMedia(result => {
-            if(result == undefined) return;
+            if (result == undefined) return;
 
             if (result.type == 'image') {
               richText.current?.insertImage(
@@ -108,7 +121,7 @@ const Post = () => {
           ]}
           iconMap={{
             ['publish']: () => ((<CircleButton text='➤'
-              size={35}
+              size={32}
               color="#2196f3"
               textColor="white"
               margin={10}
@@ -120,6 +133,8 @@ const Post = () => {
         {sizeSelectorState &&
           <RichToolbar
             editor={richText}
+            style={styles.toolbar}
+            flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize*tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
             actions={[
               /* CUSTOM */
               'size1',
@@ -148,21 +163,23 @@ const Post = () => {
             size7={() => { richText.current?.setFontSize(7) }}
           />}
       </KeyboardAvoidingView>
-      <ImageSelector visible={publishSelectorState} transparent={true} onDone={() => setPublishSelectorState(false)} />
+      <PreviewModal visible={publishSelectorState} transparent={true} onDone={() => setPublishSelectorState(false)} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   editor: {
     backgroundColor: 'white',
     color: 'black'
   },
+  toolbar: {
+  },
+  toolbarcontainer: {
+    margin: 'auto'
+  }
 });
 
 Post.propTypes = {

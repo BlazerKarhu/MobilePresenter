@@ -6,6 +6,9 @@ import Fab from '../components/fab';
 import LoginModal from '../views/modals/LoginModal';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Home = (props) => {
   const { navigation } = props;
@@ -13,32 +16,31 @@ const Home = (props) => {
   const [loggedIn, setLoggedIn] = useState(false)
   console.log("Logged in", loggedIn)
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
       <NewsCarousel navigation={navigation} />
       <NewsList navigation={navigation} />
-      <>
-        {loggedIn == true ? (
-          <><View style={styles.buttonView}>
-            <Button
-              title='Logout'
-              onPress={() => {setLoggedIn(false)}} />
-          </View><Fab actions={actions} onPressItem={name => navigation.navigate(name)} /></>
-        ) : (
-          <View style={styles.buttonView} >
-            <Button
-              title='Login'
-              onPress={() => {setLoginForm(!loginForm)}}
-            />
-          </View>
-        )}
-      </>
+
+
+
+      <View style={styles.buttonView}>
+
+        <Button
+          title={loggedIn ? 'Logout' : 'Login'}
+          onPress={() => { loggedIn ? setLoggedIn(false) : setLoginForm(!loginForm) }} />
+      </View>
+
+
+
+      {loggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name)} />}
+
       <LoginModal
         visible={loginForm}
         transparent={true}
         onClose={() => { setLoginForm(false) }}
         onDone={() => { setLoginForm(false), setLoggedIn(true) }} />
-      <StatusBar style='auto' />
-    </View>
+      <StatusBar hidden style='auto' />
+    </SafeAreaProvider>
+
   );
 }
 
@@ -48,10 +50,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     justifyContent: 'center',
-    paddingTop: 20,
   },
   buttonView: {
-    top:10,
+    top: 10,
     right: 10,
     position: 'absolute',
   },

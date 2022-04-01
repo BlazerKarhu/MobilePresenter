@@ -4,11 +4,12 @@ const doFetch = async (url, options = {}) => {
   const response = await fetch(url, options);
   const json = await response.json();
   if (json.error) {
-    if (response.status == 401 && auth.lastUsername != undefined && auth.lastPassword != undefined) {
+    if (response.status == 401 && auth.lastUsername != undefined && auth.lastPassword != undefined &&
+      await auth.login(auth.lastUsername, auth.lastPassword)) {
 
       // Unauthorized, most likely due to token expiration, try again after logging in again
-      if (await auth.login(auth.lastUsername, auth.lastPassword))
-        return await doFetch(url, { ...options, 'Authorization': auth.token })
+      options.headers = { ...options.headers, 'Authorization': auth.token }
+      return await doFetch(url, options)
     }
     else {
       console.log(response.status)
@@ -17,7 +18,6 @@ const doFetch = async (url, options = {}) => {
       throw new Error(json.message + ': ' + json.error);
     }
   } else if (!response.ok) {
-    console.log("AuthRetry2")
     // if API response does not contain error message, but there is some other error
     throw new Error(`doFetch failed with status ${response.statusText}`);
   } else {

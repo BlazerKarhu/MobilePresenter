@@ -4,7 +4,7 @@ import { token } from './auth'
 
 /**
  * Uploads the given base64 media (image/video/...?)
- * Will call function result(imageUrl) once done. Undefined if error.
+ * Will call function onDone(mediaPath) once done. MediaPath is undefined if error.
  * 
  * Example:
  * import media from '../database/media';

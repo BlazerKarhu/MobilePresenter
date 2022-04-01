@@ -1,7 +1,7 @@
 const express = require('express')
 var nJwt = require('njwt');
 
-const { username, password, salt } = require('../app.config');
+const { username, password, salt } = require('../server.config');
 const router = express.Router()
 
 // Administrative login

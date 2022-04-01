@@ -1,4 +1,4 @@
-import { baseUrl } from '../../app.config'
+import { baseUrl } from '../../client.config'
 import doFetch from '../utils/fetch'
 import { token } from './auth'
 

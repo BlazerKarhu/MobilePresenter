@@ -1,6 +1,6 @@
 const express = require('express')
 var nJwt = require('njwt');
-const { salt } = require('../app.config');
+const { salt } = require('../server.config');
 
 const auth = async (req, res, next) => {
     const token = (req.headers.authorization != undefined && req.headers.authorization.split(' ')[0] === 'Bearer') ?

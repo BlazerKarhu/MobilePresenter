@@ -48,18 +48,17 @@ const newsCarousel = (props) => {
 
   return (
     <View style={{
-      flex: 1,
-      flexDirection: "column"
+
     }}>
       <FlatList
         horizontal
         pagingEnabled
         onLayout={(event) => setLayout(event.nativeEvent.layout)}
-        onMomentumScrollEnd={(event) => { let i = Math.round((event.nativeEvent.contentOffset.x / event.nativeEvent.contentSize.width) / (1 / mediaArray.length)); setInterval(i) }}
+        onScroll={(event) => {let i = Math.round((event.nativeEvent.contentOffset.x / event.nativeEvent.contentSize.width) / (1 / mediaArray.length)); setInterval(i);}}
         data={mediaArray}
         ref={carouselRef}
         showsHorizontalScrollIndicator={false}
-        style={{ maxHeight: windowHeight / 1.5 }}
+        style={{  }}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
@@ -93,25 +92,27 @@ const newsCarousel = (props) => {
 const bullets = (carouselRef, interval, setInterval) => {
   return <View
     style={{
-      display: "flex",
       flexDirection: "row",
       justifyContent: "center",
     }}
-  >{mediaArray.map(function (image) {
+  >
+    {mediaArray.map((image) => {
     return <Text
       key={image.key}
       onPress={() => {
-        setInterval(image.key)
         carouselRef.current.scrollToIndex({ animated: true, index: image.key });
       }}
-      style={[bulletstyle, { opacity: interval == image.key ? 0.5 : 0.2 }]}
-    > &bull; </Text>
+      style={[styles.bulletstyle, { opacity: interval == image.key ? 0.6 : 0.42 }]}
+    >•</Text>
   })}</View>
 }
 
-const bulletstyle = StyleSheet.create({
-  fontSize: 50,
-  paddingHorizontal: 10
+const styles = StyleSheet.create({
+  bulletstyle: {
+    fontSize: 60,
+    padding: 10,
+    textAlign: 'center',
+  },
 });
 
 newsCarousel.propTypes = {

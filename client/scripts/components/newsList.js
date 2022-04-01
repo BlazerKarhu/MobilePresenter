@@ -41,6 +41,7 @@ const mediaArray = [
 ];
 
 const targetwidth = 500 // When a single view should be cut off width wise. Target width for each item.
+const margin = 10
 
 const NewsList = (props) => {
   const { navigation } = props;
@@ -51,6 +52,7 @@ const NewsList = (props) => {
   });
 
   const columns = Math.round(layout.width / targetwidth)
+  const itemWidth = (layout.width-margin*2*columns) / columns
 
   return (
     <FlatList
@@ -67,9 +69,9 @@ const NewsList = (props) => {
                 navigation.navigate('Single', { file: item });
               }
             }
-            style={styles.newsItem}>
+            style={[styles.newsItem, {width: itemWidth}]}>
             <Image
-              style={{ width: layout.width / columns, aspectRatio: layout.width / targetwidth }}
+              style={{ aspectRatio: 2/1 }}
               source={{ uri: item.thumbnails.w160 }}
             />
             <View>
@@ -85,12 +87,9 @@ const NewsList = (props) => {
 const styles = StyleSheet.create({
   newsList: {
     flex: 1,
-    padding: 10,
-    margin: 20
   },
   newsItem: {
-    marginVertical: 10,
-    marginHorizontal: 10
+    margin: margin
   },
 });
 

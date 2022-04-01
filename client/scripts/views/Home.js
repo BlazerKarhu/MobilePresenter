@@ -51,13 +51,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   buttonView: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'flex-start',
-    flexWrap: "wrap",
-    alignSelf: 'flex-end',
-    marginStart: "80%",
-    marginEnd: 5,
-    paddingTop: 25,
+    top:10,
+    right: 10,
     position: 'absolute',
   },
 });

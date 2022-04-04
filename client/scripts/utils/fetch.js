@@ -1,15 +1,29 @@
 import auth from '../database/auth'
+import * as SecureStore from 'expo-secure-store';
 
 const doFetch = async (url, options = {}) => {
   const response = await fetch(url, options);
   const json = await response.json();
-  if (json.error) {
-    if (response.status == 401 && auth.lastUsername != undefined && auth.lastPassword != undefined &&
-      await auth.login(auth.lastUsername, auth.lastPassword)) {
 
-      // Unauthorized, most likely due to token expiration, try again after logging in again
-      options.headers = { ...options.headers, 'Authorization': auth.token }
-      return await doFetch(url, options)
+  if (json.error) {
+    if (response.status == 401) {
+
+      const username = await SecureStore.getItemAsync("username");
+      const password = await SecureStore.getItemAsync("password");
+      if (
+        username != undefined && password != undefined &&
+        await auth.login(username, password
+        )) {
+          const userToken = await SecureStore.getItemAsync("userToken")
+
+        // Unauthorized, most likely due to token expiration, try again after logging in again
+        options.headers = { ...options.headers, 'Authorization': userToken }
+        return await doFetch(url, options)
+        
+      }else {
+        console.log(response.status)
+        throw new Error(json.message + ': ' + json.error);
+      }
     }
     else {
       console.log(response.status)

@@ -14,7 +14,7 @@ import { token } from './auth'
  * })
  */
 const uploadMedia = async (base64, onDone) => {
-    const result = await doFetch(baseUrl + '/' + 'api/media',
+    const result = await doFetch(baseUrl + 'api/media',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': token },

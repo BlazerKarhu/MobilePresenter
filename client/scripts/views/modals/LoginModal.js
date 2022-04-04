@@ -1,29 +1,41 @@
-import React, { useState } from 'react';
-import { Modal, StyleSheet, Text, Pressable, View, Button, Image, TouchableWithoutFeedback, TextInput, ImageBackground } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Modal, StyleSheet, Text, Alert, View, TouchableWithoutFeedback, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import CircleButton from '../../components/circleButton';
+import auth from '../../database/auth';
+import { MainContext } from '../../contexts/MainContext';
 
 const picker = (props) => {
     const { actions, active, visible, onPressItem, onDone, onClose } = props;
 
     const [accountInput, setAccountInput] = useState('')
     const [passwordInput, setPasswordInput] = useState('')
+    const {isLoggedIn, setIsLoggedIn } = useContext(MainContext);
 
-    const hardCodedLoginInfo = {
-        account: "Nokia",
-        password: "news",
-    }
-
-    const doLogin = () => {
-        if (hardCodedLoginInfo.account == accountInput
-            && hardCodedLoginInfo.password == passwordInput) {
-            alert("login success")
-            setAccountInput('')
+    const doLogin = async () => {
+        if (isLoggedIn){
+            setIsLoggedIn(true)
             onDone()
+        } else {
+            try {
+            const username = accountInput;
+            const password = passwordInput;
+            await auth.login(username, password, (
+                async (token) => {
+                    console.log("auth login token ", token)
+                    const usertoken = token
+                    console.log('login ok, userToken:', usertoken);
+                    if (token != undefined) {
+                        setIsLoggedIn(true);
+                        onDone()
+                    }
+                }));
+        } catch (error) {
+            console.log('Login error', error.message);
+            Alert.alert('Login error', error.message);
         }
-        else {
-            alert("Wrong login info")
         }
+        
     }
 
     return (
@@ -37,7 +49,7 @@ const picker = (props) => {
                 <TouchableWithoutFeedback onPress={() => onClose()}>
                     <View style={styles.modalBackdrop} >
                         <TouchableWithoutFeedback onPress={() => { }}>
-                            <View style={[styles.modalContent, {minWidth: "20%"}]}>
+                            <View style={[styles.modalContent, { minWidth: "20%" }]}>
                                 <Text style={{ textAlign: 'center', fontSize: 32, margin: 10 }}>Login</Text>
                                 <TextInput
                                     style={styles.input}

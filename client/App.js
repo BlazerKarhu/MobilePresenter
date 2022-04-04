@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import { MainProvider } from './scripts/contexts/MainContext';
 import Navigator from './scripts/utils/navigator';
 
 
@@ -7,9 +8,10 @@ import Navigator from './scripts/utils/navigator';
 const App = () => {
   return (
     <>
+    <MainProvider>
       <Navigator></Navigator>
       <StatusBar style='auto' />
-      
+    </MainProvider>
     </>
   );
 }

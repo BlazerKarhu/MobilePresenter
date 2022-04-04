@@ -10,32 +10,32 @@ const picker = (props) => {
 
     const [accountInput, setAccountInput] = useState('')
     const [passwordInput, setPasswordInput] = useState('')
-    const {isLoggedIn, setIsLoggedIn } = useContext(MainContext);
+    const { isLoggedIn, setIsLoggedIn } = useContext(MainContext);
+
 
     const doLogin = async () => {
-        if (isLoggedIn){
-            setIsLoggedIn(true)
+        if (isLoggedIn) {
             onDone()
         } else {
             try {
-            const username = accountInput;
-            const password = passwordInput;
-            await auth.login(username, password, (
-                async (token) => {
-                    console.log("auth login token ", token)
-                    const usertoken = token
-                    console.log('login ok, userToken:', usertoken);
-                    if (token != undefined) {
-                        setIsLoggedIn(true);
-                        onDone()
-                    }
-                }));
-        } catch (error) {
-            console.log('Login error', error.message);
-            Alert.alert('Login error', error.message);
+                const username = accountInput;
+                const password = passwordInput;
+                await auth.login(username, password, (
+                    async (token) => {
+                        console.log("auth login token ", token)
+                        const usertoken = token
+                        console.log('login ok, userToken:', usertoken);
+                        if (token != undefined) {
+                            setIsLoggedIn(true);
+                            onDone()
+                        }
+                    }));
+            } catch (error) {
+                console.log('Login error', error.message);
+                Alert.alert('Login error', error.message);
+            }
         }
-        }
-        
+
     }
 
     return (

@@ -9,30 +9,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MainContext } from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import media from '../database/media';
 
 const Home = (props) => {
   const { navigation } = props;
   const [loginForm, setLoginForm] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useContext(MainContext);
-
-    const getToken = async () => {
-      const userToken = await AsyncStorage.getItem('userToken');
-      console.log('token', userToken);
-      if (userToken) {
-        try {
-          setIsLoggedIn(true);
-          media.uploadMedia(`data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII`, (path) => {
-            console.log(path)
-          })
-        } catch (error) {
-          console.log('getToken check failed', error.messge);
-        }
-      }
-    };
-    useEffect(() => {
-      getToken();
-    }, []);
   
 
 
@@ -49,9 +30,8 @@ const Home = (props) => {
             if (isLoggedIn) {
               console.log("removed user info")
               await AsyncStorage.removeItem("userToken");
-              await AsyncStorage.removeItem("username")
-              await AsyncStorage.removeItem("password")
-              console.log("useEffect clear username", await AsyncStorage.getItem("username"))
+              await AsyncStorage.removeItem("username");
+              await AsyncStorage.removeItem("password");
               setIsLoggedIn(false)
             } else {
               setLoginForm(!loginForm)

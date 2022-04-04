@@ -1,6 +1,8 @@
 const express = require('express')
 var cors = require('cors')
 
+const { port } = require('./server.config');
+
 const posts = require('./endpoints/posts')
 const tags = require('./endpoints/tags')
 const media = require('./endpoints/media')
@@ -22,7 +24,7 @@ app.get('/', async (req, res) => {
   res.send('hello world!')
 })
 
-app.listen(3000, () => {
-    console.log(`Server listening on localhost:3000`)
+app.listen(port, () => {
+    console.log(`Server listening on localhost:${port}`)
   })
 

@@ -1,4 +1,3 @@
-import { baseUrl } from '../../client.config'
 import doFetch from '../utils/fetch'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  */
 const uploadMedia = async (base64, onDone) => {
     const userToken = await AsyncStorage.getItem("userToken")
-    const result = await doFetch(baseUrl + 'api/media',
+    const result = await doFetch('api/media',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': userToken },

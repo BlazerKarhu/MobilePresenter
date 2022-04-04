@@ -1,5 +1,5 @@
 import { baseUrl } from '../../client.config'
-import doFetch from '../utils/fetch'
+import { convertIp } from '../utils/debug'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /* export var token = ""
@@ -16,25 +16,38 @@ export var lastPassword = undefined
  * auth.login("admin","pass", (successLogin) => {console.log(successLogin)});
  */
 const login = async (username, password, onDone = () => { }) => {
-    const result = await doFetch(baseUrl + 'api/login',
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ 'username': username, 'password': password }),
-        });
+    const url = convertIp(baseUrl) + 'api/login'
+    const options = 
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ 'username': username, 'password': password }),
+    };
 
-    console.log(result)
-    console.log("result data token", result.data.token)
+    const response = await fetch(url, options);
+    const json = await response.json();
 
-    if (result.message != undefined && result.message == "success") {
-        await AsyncStorage.setItem("userToken", result.data.token);
-        await AsyncStorage.setItem("username", username)
-        await AsyncStorage.setItem("password", password)
-        onDone(result.data.token)
-        return result.data.token
+    if (json.error) {
+        console.log(response.status)
+
+        // if API response contains error message (use Postman to get further details)
+        throw new Error(json.message + ': ' + json.error);
+
+    } else if (!response.ok) {
+        // if API response does not contain error message, but there is some other error
+        throw new Error(`doFetch failed with status ${response.statusText}`);
     } else {
-        onDone(undefined)
-        return undefined
+        // if all goes well
+        if (json.message != undefined && json.message == "success") {
+            await AsyncStorage.setItem("userToken", json.data.token);
+            await AsyncStorage.setItem("username", username)
+            await AsyncStorage.setItem("password", password)
+            onDone(json.data.token)
+            return json.data.token
+        } else {
+            onDone(undefined)
+            return undefined
+        }
     }
 }
 

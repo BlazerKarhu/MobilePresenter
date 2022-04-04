@@ -1,8 +1,10 @@
 import auth from '../database/auth'
+import { baseUrl } from '../../client.config'
+import { convertIp } from '../utils/debug'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const doFetch = async (url, options = {}) => {
-  const response = await fetch(url, options);
+  const response = await fetch(convertIp(baseUrl) + url, options);
   const json = await response.json();
 
   if (json.error) {
@@ -10,17 +12,15 @@ const doFetch = async (url, options = {}) => {
 
       const username = await AsyncStorage.getItem("username");
       const password = await AsyncStorage.getItem("password");
-      if (
-        username != undefined && password != undefined &&
-        await auth.login(username, password
-        )) {
-          const userToken = await AsyncStorage.getItem("userToken")
+
+      if (username != undefined && password != undefined && await auth.login(username, password)) {
+        const userToken = await AsyncStorage.getItem("userToken")
 
         // Unauthorized, most likely due to token expiration, try again after logging in again
         options.headers = { ...options.headers, 'Authorization': userToken }
         return await doFetch(url, options)
-        
-      }else {
+
+      } else {
         console.log(response.status)
         throw new Error(json.message + ': ' + json.error);
       }
@@ -40,5 +40,6 @@ const doFetch = async (url, options = {}) => {
   }
 
 };
+
 
 export default doFetch

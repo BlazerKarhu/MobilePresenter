@@ -16,6 +16,11 @@ const password = "pass"
 */
 const salt = secureRandom(256, {type: 'Buffer'}).toString('base64');
 
+/**
+ * Port for the server to use.
+*/
+const port = 3000
 
 
-module.exports = {username, password, salt}
+
+module.exports = {username, password, salt, port}

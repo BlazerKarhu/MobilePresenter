@@ -1,5 +1,5 @@
 import auth from '../database/auth'
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const doFetch = async (url, options = {}) => {
   const response = await fetch(url, options);
@@ -8,13 +8,13 @@ const doFetch = async (url, options = {}) => {
   if (json.error) {
     if (response.status == 401) {
 
-      const username = await SecureStore.getItemAsync("username");
-      const password = await SecureStore.getItemAsync("password");
+      const username = await AsyncStorage.getItem("username");
+      const password = await AsyncStorage.getItem("password");
       if (
         username != undefined && password != undefined &&
         await auth.login(username, password
         )) {
-          const userToken = await SecureStore.getItemAsync("userToken")
+          const userToken = await AsyncStorage.getItem("userToken")
 
         // Unauthorized, most likely due to token expiration, try again after logging in again
         options.headers = { ...options.headers, 'Authorization': userToken }

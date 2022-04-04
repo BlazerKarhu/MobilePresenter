@@ -1,6 +1,6 @@
 import { baseUrl } from '../../client.config'
 import doFetch from '../utils/fetch'
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /* export var token = ""
 export var lastUsername = undefined
@@ -27,9 +27,9 @@ const login = async (username, password, onDone = () => { }) => {
     console.log("result data token", result.data.token)
 
     if (result.message != undefined && result.message == "success") {
-        await SecureStore.setItemAsync("userToken", result.data.token);
-        await SecureStore.setItemAsync("username", username)
-        await SecureStore.setItemAsync("password", password)
+        await AsyncStorage.setItem("userToken", result.data.token);
+        await AsyncStorage.setItem("username", username)
+        await AsyncStorage.setItem("password", password)
         onDone(result.data.token)
         return result.data.token
     } else {

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Button, Platform } from 'react-native';
+import { StyleSheet, View, Button, Platform} from 'react-native';
 import NewsCarousel from '../components/newsCarousel';
 import NewsList from '../components/newsList';
 import Fab from '../components/fab';
@@ -9,18 +9,25 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MainContext } from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import getPosts from '../database/posts'
 
 const Home = (props) => {
   const { navigation } = props;
   const [loginForm, setLoginForm] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useContext(MainContext);
-  
-
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    getPosts.getPosts ((posts)=> {
+      if (posts.data != undefined) {
+        setPosts(posts.data)
+      }
+    })
+  }, [])
 
   return (
     <SafeAreaProvider style={styles.container}>
-      <NewsCarousel navigation={navigation} />
-      <NewsList navigation={navigation} />
+      <NewsCarousel navigation={navigation} posts={posts} />
+      <NewsList navigation={navigation} posts={posts}/>
 
       <View style={styles.buttonView}>
 

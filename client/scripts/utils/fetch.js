@@ -4,42 +4,47 @@ import { convertIp } from '../utils/debug'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const doFetch = async (url, options = {}) => {
+
   const response = await fetch(convertIp(baseUrl) + url, options);
-  const json = await response.json();
 
-  if (json.error) {
-    if (response.status == 401) {
-
-      const username = await AsyncStorage.getItem("username");
-      const password = await AsyncStorage.getItem("password");
-
-      if (username != undefined && password != undefined && await auth.login(username, password)) {
-        const userToken = await AsyncStorage.getItem("userToken")
-
-        // Unauthorized, most likely due to token expiration, try again after logging in again
-        options.headers = { ...options.headers, 'Authorization': userToken }
-        return await doFetch(url, options)
-
-      } else {
-        console.log(response.status)
-        throw new Error(json.message + ': ' + json.error);
-      }
+  if (!response.ok) // Status not between 200-299
+  {
+    if (response.status == 401) // Attempt to re-authenticate
+    {
+      return await fetchReAuthenticate(url, options, response)
     }
-    else {
-      console.log(response.status)
-
-      // if API response contains error message (use Postman to get further details)
-      throw new Error(json.message + ': ' + json.error);
-    }
-  } else if (!response.ok) {
-    // if API response does not contain error message, but there is some other error
-    throw new Error(`doFetch failed with status ${response.statusText}`);
-  } else {
-    // if all goes well
-    return json;
   }
 
+  return tryParseResponseJson(response)
 };
+
+const fetchReAuthenticate = async (url, options, response) => {
+  const username = await AsyncStorage.getItem("username");
+  const password = await AsyncStorage.getItem("password");
+
+  if (username != undefined && password != undefined && await auth.login(username, password)) {
+    const userToken = await AsyncStorage.getItem("userToken")
+
+    // Unauthorized, most likely due to token expiration, try again after logging in again
+    options.headers = { ...options.headers, 'Authorization': userToken }
+    return await doFetch(url, options)
+
+  } else {
+    return await tryParseResponseJson(response);
+  }
+}
+
+const tryParseResponseJson = async (response) => {
+  try {
+    const json = await response.json();
+
+    return (json != undefined && json.error != undefined) ?
+      { error: json.error } : json
+
+  } catch (err) {
+    return { error: response.statusText != undefined ? response.statusText : err, ok: response.ok, status: response.status  }
+  }
+}
 
 
 export default doFetch

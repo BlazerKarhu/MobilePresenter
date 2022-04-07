@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, SafeAreaView, KeyboardAvoidingView, Text, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, KeyboardAvoidingView, Text, Alert, Button } from 'react-native';
 import PropTypes from 'prop-types';
 
 import PreviewModal from '../views/modals/PreviewModal'
@@ -7,6 +7,8 @@ import CircleButton from '../components/circleButton';
 
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import selectMedia from '../utils/select';
+import { uploadMedia } from '../database/media';
+import Dialog from './modals/DialogModal';
 
 const Post = () => {
   const [layout, setLayout] = useState({
@@ -22,6 +24,9 @@ const Post = () => {
   const [sizeSelectorState, setSizeSelectorState] = useState(false)
   const [publishSelectorState, setPublishSelectorState] = useState(false)
 
+  // Used for showing popups. Text property is shown in popup and onProceed() is called if Ok is pressed.
+  const [popupDialogContent, setPopupDialogContent] = useState({ text: "", onProceed: () => { } });
+
 
 
 
@@ -31,7 +36,6 @@ const Post = () => {
       style={{ width: '100%', height: '100%' }}>
       <RichEditor
         style={{ flex: 1 }}
-        onChange={(text) => console.log(text)}
         androidLayerType="hardware"
         ref={richText}
         initialFocus={true}
@@ -54,7 +58,7 @@ const Post = () => {
         <RichToolbar
           editor={richText}
           style={styles.toolbar}
-          flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize*tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
+          flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize * tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
           fontSize={() => setSizeSelectorState(!sizeSelectorState)}
           // Custom buttons
           actions={[
@@ -79,22 +83,39 @@ const Post = () => {
         <RichToolbar
           editor={richText}
           style={styles.toolbar}
-          flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize*tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
+          flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize * tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
           onPressAddImage={() => selectMedia(result => {
             if (result == undefined) return;
 
-            if (result.type == 'image') {
-              richText.current?.insertImage(
-                `${result.uri}`,
-                'background: gray;',
-              );
-            }
-            else {
-              richText.current?.insertVideo(
-                `${result.uri}`,
-                'width: 50%;margin-left: auto;margin-right: auto;',
-              );
-            }
+            uploadMedia(result.uri, (path) => {
+              // Path being undefined signified that an issue occured
+              // For an example if the file size it too large
+              // In such a case, save the image to html instead of as a file in the database.
+
+              const insertMedia = () => {
+                if (result.type == 'image') {
+                  richText.current?.insertImage(
+                    `${path.error != undefined ? result.uri : path}`,
+                    'background: gray;',
+                  );
+                }
+                else {
+                  // No support for aligning in richText.current?.insertVideo(...), so done manually.
+                  richText.current?.insertHTML(
+                    `<p><iframe src="${path.error != undefined ? result.uri : path}" style="width: 50%;display: inline;"/></p>`
+                  );
+                }
+              }
+
+              if (path.error != undefined) {
+                setPopupDialogContent({ text: `Editor encountered an issue: \n\n ${path.error}\n\n Retry using manual media insertion?`, onProceed: () => insertMedia() })
+                return;
+              }
+              else insertMedia()
+
+
+
+            })
           })}
           actions={[
             /* TEXT DECORATION */
@@ -134,7 +155,7 @@ const Post = () => {
           <RichToolbar
             editor={richText}
             style={styles.toolbar}
-            flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize*tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
+            flatContainerStyle={[styles.toolbarcontainer, { width: (tlbarBtnSize * tlbarMaxBtnCount > layout.width) ? layout.width : undefined }]}
             actions={[
               /* CUSTOM */
               'size1',
@@ -163,7 +184,15 @@ const Post = () => {
             size7={() => { richText.current?.setFontSize(7) }}
           />}
       </KeyboardAvoidingView>
+
       <PreviewModal visible={publishSelectorState} transparent={true} onDone={() => setPublishSelectorState(false)} />
+      <Dialog
+        visible={popupDialogContent.text != ""}
+        text={popupDialogContent.text} buttons={["Cancel", "Yes"]}
+        onDone={(button) => { if (button == "Yes") popupDialogContent.onProceed(); setPopupDialogContent({ text: "", onProceed: () => { } }) }}>
+      </Dialog>
+
+
     </SafeAreaView>
   );
 };

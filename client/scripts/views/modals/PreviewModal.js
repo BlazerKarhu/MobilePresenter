@@ -7,8 +7,6 @@ import CircleButton from '../../components/circleButton';
 import selectMedia from '../../utils/select';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-// Currently unused, can be deleted if not needed.
-
 const picker = (props) => {
     const { actions, active, visible, onPressItem, onDone } = props;
 

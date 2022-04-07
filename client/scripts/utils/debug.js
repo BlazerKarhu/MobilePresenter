@@ -5,7 +5,6 @@ import { Platform } from 'react-native';
 
 // Used for converting special ip addresses to device specific ones.
 export const convertIp = (ip) => {
-    console.log("debug")
 
     if (Platform.OS == 'android') // Use localhost of the machine running the UI. 
     {

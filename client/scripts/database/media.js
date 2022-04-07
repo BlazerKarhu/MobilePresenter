@@ -1,10 +1,13 @@
 import doFetch from '../utils/fetch'
+import { convertIp } from '../utils/debug'
+import { baseUrl } from '../../client.config'
 
+import { Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * Uploads the given base64 media (image/video/...?)
- * Will call function onDone(mediaPath) once done. MediaPath is undefined if error.
+ * Will call function onDone(mediaPath) once done. MediaPath.error is not undefined if error.
  * 
  * Example:
  * import media from '../database/media';
@@ -13,8 +16,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  *  console.log(path)
  * })
  */
-const uploadMedia = async (base64, onDone) => {
+export const uploadMedia = async (base64, onDone) => {
     const userToken = await AsyncStorage.getItem("userToken")
+
     const result = await doFetch('api/media',
         {
             method: 'POST',
@@ -22,17 +26,15 @@ const uploadMedia = async (base64, onDone) => {
             body: JSON.stringify({ 'media': base64 })
         });
 
-    console.log(result)
-
     if (result.message != undefined && result.message == "success") {
         const path = result.data.path
-        const ret = path.slice(0, "http".length) == "http" ? path : baseUrl.slice(0, baseUrl.length-1) + path
+        const ret = path.slice(0, "http".length) == "http" ? path : convertIp(baseUrl).slice(0, convertIp(baseUrl).length - 1) + path
         onDone(ret)
         return ret
-    } else {
-        onDone(undefined)
-        return undefined
     }
+
+    onDone(result)
+    return result
 }
 
 

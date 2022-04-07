@@ -1,5 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { Alert } from "react-native";
 
 
 // Lets the user pick an image or video and calls the onDone() function when finished. 

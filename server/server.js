@@ -12,8 +12,8 @@ const app = express()
 app.use(cors())
 
 var bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false, limit: '200mb' }));
+app.use(bodyParser.json({limit: '200mb'}));
 
 app.use('/api/posts', posts)
 app.use('/api/tags', tags)

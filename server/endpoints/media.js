@@ -27,28 +27,26 @@ router.post("/", (req, res, next) => {
         res.status(400).json({ "error": errors.join(",") });
         return;
     }
-    var data = {
-        media: req.body.media,
-    }
+    var data = {}
 
     try {
-        const folder = data.media.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/,2)[1]
+        const split = req.body.media.split(/[ .:;?!~,`"&|()<>{}\[\]\r\n/\\]+/, 3)
+        const folder = split[1]
 
-        console.log(folder)
-
-        if (data.media.slice(0, "data:".length) != "data:" || !folder.length || !fs.existsSync('./public/' + folder)) {
+        if (req.body.media.slice(0, "data:".length) != "data:" || !folder.length || !fs.existsSync('./public/' + folder)) {
             throw "Invalid formatting in media or media type was not accepted";
         }
 
-        data.path = '/'+folder + '/' + Date.now() + '.png'
+        const filetype = split[2]
 
-        const base64Data = data.media.replace(/^data:([A-Za-z-+/]+);base64,/, '');
+        data.path = '/' + folder + '/' + Date.now() + '.' + filetype
+
+        const base64Data = req.body.media.replace(/^data:(.*?);base64,/, '').replace(/ /g, '+');
 
         fs.writeFileSync('./public' + data.path, base64Data, { encoding: 'base64' });
 
         data.path = req.baseUrl + data.path
-    } catch(err)
-    {
+    } catch (err) {
         res.status(400).json({ "error": err })
         return;
     }

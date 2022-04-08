@@ -6,16 +6,18 @@ import ExpandingTextInput from '../../components/expandingTextInput';
 import CircleButton from '../../components/circleButton';
 import selectMedia from '../../utils/select';
 import DropDownPicker from 'react-native-dropdown-picker';
+import media from '../../database/media';
 
 const picker = (props) => {
-    const { actions, active, visible, onPressItem, onDone } = props;
+    const { actions, active, visible, html, onPressItem, onDone } = props;
 
     const [layout, setLayout] = useState({
         width: 0,
         height: 0,
-      });
+    });
 
     const [image, setImage] = useState(undefined)
+    const [title, setTitle] = useState('')
 
     const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
     const [tags, setTags] = useState({
@@ -32,9 +34,21 @@ const picker = (props) => {
 
     const onExit = () => {
         setTagsWithSelected([]);
+        doPost();
         onDone();
     }
 
+    const doPost = async () => {
+        console.log('doPost title:', title)
+        console.log('doPost html:', html)
+        try {
+            media.uploadMedia(image, (imagePath) => {
+                console.log('doPost image path:', imagePath)
+            })
+        } catch (error) {
+            console.log('doPost uploadMedia failed', error.messge);
+        }
+    }
 
     return (
         <View>
@@ -47,12 +61,18 @@ const picker = (props) => {
                 <TouchableWithoutFeedback onPress={() => onExit()}>
                     <View style={styles.modalBackdrop} >
                         <TouchableWithoutFeedback onPress={() => { }}>
-                            <View style={[styles.modalContent, {minWidth: "50%"}]} onLayout={(event) => setLayout(event.nativeEvent.layout)}>
+                            <View style={[styles.modalContent, { minWidth: "50%" }]} onLayout={(event) => setLayout(event.nativeEvent.layout)}>
                                 <Text style={{ textAlign: 'center', fontSize: 32, margin: 10 }}>Post Preview</Text>
 
                                 <TouchableWithoutFeedback onPress={() => selectMedia((media) => { setImage(media.uri) }, 'image', [2, 1])}>
                                     <ImageBackground source={{ uri: image }} style={styles.image}>
-                                        <ExpandingTextInput placeholder={'Title'} style={{ maxHeight: '40%' }} maxLength={100} />
+                                        <ExpandingTextInput
+                                            placeholder={'Title'}
+                                            style={{ maxHeight: '40%' }}
+                                            maxLength={100}
+                                            onChange={(input) => {
+                                                setTitle(input);
+                                            }} />
                                     </ImageBackground>
                                 </TouchableWithoutFeedback>
 
@@ -75,8 +95,8 @@ const picker = (props) => {
                                     containerStyle={{ height: 50, width: '90%', maxWidth: '99%', alignSelf: 'center' }}
                                     listItemContainerStyle={{
                                         padding: 10,
-                                      }}
-           
+                                    }}
+
                                     dropDownContainerStyle={{
                                         /*Selector*/
                                         borderRadius: 0,
@@ -91,10 +111,10 @@ const picker = (props) => {
                                         borderColor: 'gray',
                                         borderWidth: 0,
                                         borderBottomWidth: 0.5
-                                      }}
+                                    }}
 
-               
-             
+
+
                                     addCustomItem={true}
                                     selectedItemContainerStyle={{ /*behind each dropdown item */ }}
                                     min={0}
@@ -102,15 +122,15 @@ const picker = (props) => {
 
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: layout.width }}>
                                     {tags.selected.map((tag) => (
-                                            <CircleButton text={tag[0].toUpperCase() + tag.slice(1)}
-                                                color="#2196f3"
-                                                key={tag}
-                                                textColor="white"
-                                                margin={10}
-                                                fontSize={20}
-                                                style={{ borderRadius: 1, padding: 10 }}
-                                                onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
-                                            />)
+                                        <CircleButton text={tag[0].toUpperCase() + tag.slice(1)}
+                                            color="#2196f3"
+                                            key={tag}
+                                            textColor="white"
+                                            margin={10}
+                                            fontSize={20}
+                                            style={{ borderRadius: 1, padding: 10 }}
+                                            onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
+                                        />)
                                     )}
                                 </View>
 

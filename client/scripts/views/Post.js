@@ -23,6 +23,7 @@ const Post = () => {
 
   const [sizeSelectorState, setSizeSelectorState] = useState(false)
   const [publishSelectorState, setPublishSelectorState] = useState(false)
+  const [html, setHtml] = useState('')
 
   // Used for showing popups. Text property is shown in popup and onProceed() is called if Ok is pressed.
   const [popupDialogContent, setPopupDialogContent] = useState({ text: "", onProceed: () => { } });
@@ -38,6 +39,12 @@ const Post = () => {
         style={{ flex: 1 }}
         androidLayerType="hardware"
         ref={richText}
+        onChange={
+          (txt) => {
+            //console.log(text)
+            setHtml(txt)
+          }
+        }
         initialFocus={true}
         editorStyle={{
           ...styles.editor,
@@ -185,7 +192,7 @@ const Post = () => {
           />}
       </KeyboardAvoidingView>
 
-      <PreviewModal visible={publishSelectorState} transparent={true} onDone={() => setPublishSelectorState(false)} />
+      <PreviewModal visible={publishSelectorState} html={html} transparent={true} onDone={() => setPublishSelectorState(false)} />
       <Dialog
         visible={popupDialogContent.text != ""}
         text={popupDialogContent.text} buttons={["Cancel", "Yes"]}

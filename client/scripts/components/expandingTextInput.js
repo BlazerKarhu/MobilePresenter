@@ -5,7 +5,7 @@ import { StyleSheet, TextInput } from "react-native";
 import PropTypes from 'prop-types';
 
 const ExpandingTextInput = props => {
-    const { lineHeight } = props;
+    const { lineHeight, onChange } = props;
 
     const textInputRef = useRef();
 
@@ -19,6 +19,7 @@ const ExpandingTextInput = props => {
         <TextInput editable multiline
             {...props}
             ref={textInputRef}
+            onChangeText={(txt)=>{onChange(txt)}}
             style={[styles.multiline, (Platform.OS === "web" && { outlineStyle: "none" }), props.style, { height: Math.max(lineHeight, textInput.height) + 1, lineHeight: lineHeight }]}
             onContentSizeChange={e => {
                 // If a significant change in height occurs (meaning at least one lines worth.)

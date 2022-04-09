@@ -15,6 +15,7 @@ const Home = (props) => {
   const { navigation } = props;
   const [loginForm, setLoginForm] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
 
   const [posts, setPosts] = useState([]);
   useEffect(() => {
@@ -23,7 +24,7 @@ const Home = (props) => {
         setPosts(posts.data)
       }
     })
-  }, [])
+  }, [update])
 
 
   return (

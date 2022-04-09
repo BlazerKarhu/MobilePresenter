@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Modal, StyleSheet, Text, View, TouchableWithoutFeedback, ImageBackground, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { Platform } from 'expo-modules-core';
@@ -9,10 +9,13 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import media from '../../database/media';
 import { uploadPost } from '../../database/posts'
 import Dialog from '../modals/DialogModal';
+import { MainContext } from '../../contexts/MainContext';
+
 
 const picker = (props) => {
     const { actions, active, visible, html: html, onPressItem, onDone } = props;
 
+    const { update, setUpdate } = useContext(MainContext);
 
     const [layout, setLayout] = useState({
         width: 0,
@@ -57,6 +60,7 @@ const picker = (props) => {
             if (imagePath.error == undefined) {
                 const resp = await uploadPost(title, imagePath, html)
                 console.log('upload response', resp)
+                setUpdate(update + 1);
                 onExit();
             } else {
                 console.error(imagePath.error)

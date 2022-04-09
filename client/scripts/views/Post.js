@@ -10,7 +10,7 @@ import selectMedia from '../utils/select';
 import { uploadMedia } from '../database/media';
 import Dialog from './modals/DialogModal';
 
-const Post = () => {
+const Post = ({navigation}) => {
   const [layout, setLayout] = useState({
     width: 0,
     height: 0,
@@ -192,7 +192,8 @@ const Post = () => {
           />}
       </KeyboardAvoidingView>
 
-      <PreviewModal visible={publishSelectorState} html={html} transparent={true} onDone={() => setPublishSelectorState(false)} />
+      <PreviewModal visible={publishSelectorState} html={html} transparent={true} onDone={() =>{
+         setPublishSelectorState(false); navigation.goBack(null);}} />
       <Dialog
         visible={popupDialogContent.text != ""}
         text={popupDialogContent.text} buttons={["Cancel", "Yes"]}

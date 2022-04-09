@@ -23,13 +23,13 @@ router.get("/", (req, res, next) => {
 // Add post
 router.post("/", (req, res, next) => {
     var errors = []
-    if (!req.body.Title) {
+    if (!req.body.title) {
         errors.push("No Title specified");
     }
     if (!req.body.image) {
         errors.push("No image specified");
     }
-    if (!req.body.Html) {
+    if (!req.body.html) {
         errors.push("No Html specified");
     }
     if (errors.length) {
@@ -37,12 +37,12 @@ router.post("/", (req, res, next) => {
         return;
     }
     var data = {
-        Title: req.body.Title,
+        title: req.body.title,
         image: req.body.image,
-        Html: req.body.Html,
+        html: req.body.html,
     }
     var sql = 'INSERT INTO posts (title, image, html) VALUES (?,?,?)'
-    var params = [data.Title, data.image, data.Html]
+    var params = [data.title, data.image, data.html]
     db.run(sql, params, function (err, result) {
         if (err) {
             res.status(400).json({ "error": err.message })

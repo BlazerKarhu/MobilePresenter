@@ -15,7 +15,7 @@
 
 # User-specific stuff
 **/.idea/
-**/db.sqlite
+*.sqlite
 
 # Custom
 *.xlsx

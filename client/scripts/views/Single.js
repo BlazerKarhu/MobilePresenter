@@ -25,7 +25,7 @@ const Single = ({ route }) => {
             </head>
             <body>
               <div style="max-width: 100%;height: auto;width: auto; /* for ie9 */">
-                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.jtzLV8nbTiaPVkbonKgPJAHaDk%26pid%3DApi&f=1" style="width: 50%"/>${html}
+                ${html}
               </div>
             </body>
           </html>` }} 

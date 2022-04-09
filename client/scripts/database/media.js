@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  *  console.log(path)
  * })
  */
-export const uploadMedia = async (base64, onDone) => {
+export const uploadMedia = async (base64, onDone = () => { }) => {
     const userToken = await AsyncStorage.getItem("userToken")
 
     const result = await doFetch('api/media',

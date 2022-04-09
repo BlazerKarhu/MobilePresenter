@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, StyleSheet, Text, Pressable, View, Button, Image, TouchableWithoutFeedback, TextInput, ImageBackground } from 'react-native';
+import { Modal, StyleSheet, Text, Pressable, View, Button, Image, TouchableWithoutFeedback, TextInput, ImageBackground, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { Platform } from 'expo-modules-core';
 import ExpandingTextInput from '../../components/expandingTextInput';
@@ -7,9 +7,12 @@ import CircleButton from '../../components/circleButton';
 import selectMedia from '../../utils/select';
 import DropDownPicker from 'react-native-dropdown-picker';
 import media from '../../database/media';
+import { uploadPost } from '../../database/posts'
+import Dialog from '../modals/DialogModal';
 
 const picker = (props) => {
-    const { actions, active, visible, html, onPressItem, onDone } = props;
+    const { actions, active, visible, html: html, onPressItem, onDone } = props;
+
 
     const [layout, setLayout] = useState({
         width: 0,
@@ -24,6 +27,7 @@ const picker = (props) => {
         tags: props.tags,
         selected: [],
     });
+    const [errorDialog, setErrorDialog] = useState('');
 
     const setTagsWithSelected = (s) => {
         setTags({
@@ -33,21 +37,32 @@ const picker = (props) => {
     }
 
     const onExit = () => {
-        setTagsWithSelected([]);
-        doPost();
         onDone();
+        setTitle('');
+        setImage(undefined);
+        setTagsWithSelected([]);
+    }
+    const onAccept = () => {
+        doPost();
     }
 
     const doPost = async () => {
         console.log('doPost title:', title)
         console.log('doPost html:', html)
-        try {
-            media.uploadMedia(image, (imagePath) => {
-                console.log('doPost image path:', imagePath)
-            })
-        } catch (error) {
-            console.log('doPost uploadMedia failed', error.messge);
-        }
+
+        media.uploadMedia(image, async (imagePath) => {
+            console.log('doPost image path:', imagePath)
+            console.log("here")
+
+            if (imagePath.error == undefined) {
+                const resp = await uploadPost(title, imagePath, html)
+                console.log('upload response', resp)
+                onExit();
+            } else {
+                console.error(imagePath.error)
+                setErrorDialog(imagePath.error)
+            }
+        })
     }
 
     return (
@@ -134,7 +149,6 @@ const picker = (props) => {
                                     )}
                                 </View>
 
-
                                 <CircleButton text='➤'
                                     size={35}
                                     color="#2196f3"
@@ -142,8 +156,13 @@ const picker = (props) => {
                                     margin={10}
                                     fontSize={20}
                                     style={styles.modalContentEnd}
-                                    onPress={() => onExit()}
+                                    onPress={() => onAccept()}
                                 />
+                                <Dialog
+                                    visible={errorDialog != ''}
+                                    text={errorDialog} buttons={["Ok"]}
+                                    onDone={() => { setErrorDialog('') }}>
+                                </Dialog>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>

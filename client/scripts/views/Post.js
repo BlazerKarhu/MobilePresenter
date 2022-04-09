@@ -10,7 +10,7 @@ import selectMedia from '../utils/select';
 import { uploadMedia } from '../database/media';
 import Dialog from './modals/DialogModal';
 
-const Post = ({navigation}) => {
+const Post = ({ navigation }) => {
   const [layout, setLayout] = useState({
     width: 0,
     height: 0,
@@ -103,7 +103,7 @@ const Post = ({navigation}) => {
                 if (result.type == 'image') {
                   richText.current?.insertImage(
                     `${path.error != undefined ? result.uri : path}`,
-                    'background: gray; max-width:100%; max-height:100%; ', 
+                    'background: gray; max-width:100%; max-height:100%; ',
                   );
                 }
                 else {
@@ -192,8 +192,9 @@ const Post = ({navigation}) => {
           />}
       </KeyboardAvoidingView>
 
-      <PreviewModal visible={publishSelectorState} html={html} transparent={true} onDone={() =>{
-         setPublishSelectorState(false); navigation.goBack(null);}} />
+      <PreviewModal visible={publishSelectorState} html={html} transparent={true} onDone={(postSuccess) => {
+        setPublishSelectorState(false); if (postSuccess == true) navigation.goBack(null)
+      }} />
       <Dialog
         visible={popupDialogContent.text != ""}
         text={popupDialogContent.text} buttons={["Cancel", "Yes"]}

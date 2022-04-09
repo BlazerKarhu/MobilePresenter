@@ -13,7 +13,7 @@ import { MainContext } from '../../contexts/MainContext';
 
 
 const picker = (props) => {
-    const { actions, active, visible, html: html, onPressItem, onDone } = props;
+    const { visible, html: html, onDone } = props;
 
     const { update, setUpdate } = useContext(MainContext);
 
@@ -39,14 +39,11 @@ const picker = (props) => {
         })
     }
 
-    const onExit = () => {
-        onDone();
+    const onExit = (postSuccess = false) => {
+        onDone(postSuccess);
         setTitle('');
         setImage(undefined);
         setTagsWithSelected([]);
-    }
-    const onAccept = () => {
-        doPost();
     }
 
     const doPost = async () => {
@@ -55,20 +52,19 @@ const picker = (props) => {
 
         media.uploadMedia(image, async (imagePath) => {
             console.log('doPost image path:', imagePath)
-            console.log("here")
 
             if (imagePath.error == undefined) {
                 const resp = await uploadPost(title, imagePath, html)
-                console.log('upload response', resp)
-                setUpdate(update + 1);
-                onExit();
-            } else {
-                console.error(imagePath.error)
-                if (Platform.OS == 'web') {
-                    setErrorDialog(imagePath.error)
-                } else {
-                    Alert.alert(imagePath.error)
+                if (resp.error == undefined) {
+                    console.log('upload response', resp) // TODO: Add tags to resp.postId
+                    setUpdate(!update);
+                    onExit(true);
                 }
+                else {
+                    setErrorDialog(resp.error)
+                }
+            } else {
+                setErrorDialog(imagePath.error)
             }
         })
     }
@@ -164,7 +160,7 @@ const picker = (props) => {
                                     margin={10}
                                     fontSize={20}
                                     style={styles.modalContentEnd}
-                                    onPress={() => onAccept()}
+                                    onPress={() => doPost()}
                                 />
                                 <Dialog
                                     visible={errorDialog != ''}

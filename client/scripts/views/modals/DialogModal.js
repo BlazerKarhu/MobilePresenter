@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Modal, StyleSheet, Text, Pressable, View, TouchableWithoutFeedback, Animated, Platform } from 'react-native';
+import { Modal, StyleSheet, Text, Pressable, View, TouchableWithoutFeedback, Animated, Platform, Dimensions } from 'react-native';
 
 /**
  * A animated sliding popup for showing option buttons to choose from.
@@ -12,32 +12,33 @@ import { Modal, StyleSheet, Text, Pressable, View, TouchableWithoutFeedback, Ani
  * <Dialog visible={popupDialogText != undefined} text={popupDialogText} buttons={["Cancel", "Yes"]} onDone={(button) => {setPopupDialogText(undefined)}}>
  */
 
+const windowHeight = Dimensions.get("window").height;
+
 const dialog = (props) => {
     const { buttons, visible, onDone } = props;
+    const animVerticalOffset = useRef(new Animated.Value(-windowHeight)).current;
 
-    const modalY = useRef(new Animated.Value(0));
-    const contentView = useRef();
+    const appearAnimation = () =>
+        Animated.timing(animVerticalOffset, {
+            duration: 300,
+            toValue: 0,
+            useNativeDriver: Platform.OS == 'web' ? false : true
+        })
 
-    const appearAnimation = () => Animated.timing(modalY.current, {
-        duration: 300,
-        toValue: 0,
-        useNativeDriver: Platform.OS == 'web' ? false : true
-    });
+    const disapearAnimation = () =>
+        Animated.timing(animVerticalOffset, {
+            duration: 300,
+            toValue: -windowHeight,
+            useNativeDriver: Platform.OS == 'web' ? false : true
+        })
 
-
-    const disapearAnimation = (height) => Animated.timing(modalY.current, {
-        duration: 300,
-        toValue: height,
-        useNativeDriver: Platform.OS == 'web' ? false : true
-    });
-
-    const onExit = (value = undefined) => disapearAnimation(-contentView.current.clientHeight).start(() => {
+    const onExit = (value = undefined) => disapearAnimation().start(() => {
         value == undefined ? props.onDone() : props.onDone(value)
     })
 
     useEffect(() => {
         if (props.visible == true) {
-            modalY.current.setValue(-(contentView?.current?.clientHeight))
+            console.log("animation start: ")
             appearAnimation().start()
         }
     }, [props.visible])
@@ -49,7 +50,13 @@ const dialog = (props) => {
                 <TouchableWithoutFeedback onPress={() => onExit(undefined)}>
                     <View style={styles.modalBackdrop} >
                         <TouchableWithoutFeedback onPress={() => { }}>
-                            <Animated.View style={[styles.modalContent, { minWidth: "20%", transform: [{ translateY: modalY.current }] }]} ref={contentView}>
+                            <Animated.View
+                                style={[styles.modalContent, {
+                                    minWidth: "20%",
+                                    transform: [{ translateY: animVerticalOffset }]
+                                }]
+                                }
+                            >
                                 <Text style={styles.dialog}> {props.text} </Text>
                                 <View {...props} style={styles.buttonContainer}>
                                     {props.buttons.map((button, index) =>

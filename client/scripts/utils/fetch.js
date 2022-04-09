@@ -38,11 +38,12 @@ const tryParseResponseJson = async (response) => {
   try {
     const json = await response.json();
 
-    return (json != undefined && json.error != undefined) ?
-      { error: json.error } : json
+    if (json == undefined) return { error: response.statusText != undefined ? response.statusText : `Undefined error with status ${response.status}`, ok: response.ok, status: response.status }
+    else if (json.error != undefined) return { error: json.error, ok: response.ok, status: response.status }
+    else return json
 
   } catch (err) {
-    return { error: response.statusText != undefined ? response.statusText : err, ok: response.ok, status: response.status  }
+    return { error: response.statusText != undefined ? (response.statusText != "" ? response.statusText : "Network error with status "+response.status) : err.toString(), ok: response.ok, status: response.status }
   }
 }
 

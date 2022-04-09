@@ -9,7 +9,7 @@ const hasSession = async () => await AsyncStorage.getItem('userToken') && await 
 const MainProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState();
   const [user, setUser] = useState({});
-  const [update, setUpdate] = useState(0);
+  const [update, setUpdate] = useState(false);
 
   useEffect(async () => {
     setIsLoggedIn(await hasSession())

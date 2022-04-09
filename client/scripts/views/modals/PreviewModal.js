@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, StyleSheet, Text, Pressable, View, Button, Image, TouchableWithoutFeedback, TextInput, ImageBackground, Alert } from 'react-native';
+import { Modal, StyleSheet, Text, View, TouchableWithoutFeedback, ImageBackground, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { Platform } from 'expo-modules-core';
 import ExpandingTextInput from '../../components/expandingTextInput';
@@ -60,7 +60,11 @@ const picker = (props) => {
                 onExit();
             } else {
                 console.error(imagePath.error)
-                setErrorDialog(imagePath.error)
+                if (Platform.OS == 'web') {
+                    setErrorDialog(imagePath.error)
+                } else {
+                    Alert.alert(imagePath.error)
+                }
             }
         })
     }

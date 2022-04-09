@@ -103,13 +103,13 @@ const Post = () => {
                 if (result.type == 'image') {
                   richText.current?.insertImage(
                     `${path.error != undefined ? result.uri : path}`,
-                    'background: gray;',
+                    'background: gray; max-width:100%; max-height:100%; ', 
                   );
                 }
                 else {
                   // No support for aligning in richText.current?.insertVideo(...), so done manually.
                   richText.current?.insertHTML(
-                    `<p><iframe src="${path.error != undefined ? result.uri : path}" style="width: 50%;display: inline;"/></p>`
+                    `<p><iframe src="${path.error != undefined ? result.uri : path}" style="max-width: 100%;display: inline;"/></p>`
                   );
                 }
               }

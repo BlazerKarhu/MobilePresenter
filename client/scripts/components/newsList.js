@@ -13,7 +13,7 @@ const NewsList = (props) => {
   });
 
   const columns = Math.round(layout.width / targetwidth)
-  const itemWidth = (layout.width-margin*2*columns) / columns
+  const itemWidth = (layout.width - margin * 2 * columns) / columns
 
   return (
     <FlatList
@@ -27,14 +27,10 @@ const NewsList = (props) => {
         console.log(item)
         return (
           <TouchableOpacity
-            onPress={
-              () => {
-                navigation.navigate('Single', { item: item.html });
-              }
-            }
-            style={[styles.newsItem, {width: itemWidth}]}>
+            onPress={() => navigation.navigate('Single', { html: item.html })}
+            style={[styles.newsItem, { width: itemWidth }]}>
             <Image
-              style={{ aspectRatio: 2/1 }}
+              style={{ aspectRatio: 2 / 1 }}
               source={{ uri: item.image }}
             />
             <View>

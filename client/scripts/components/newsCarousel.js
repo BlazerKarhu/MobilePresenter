@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions, Touchable, TouchableNativeFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-
+/* 
 const mediaArray = [
   {
     'key': '0',
@@ -31,10 +31,10 @@ const mediaArray = [
     },
     'filename': 'http://placekitten.com/2039/1920',
   },
-];
+]; */
 
 const newsCarousel = (props) => {
-  const { navigation } = props;
+  const { navigation, posts } = props;
 
   const windowHeight = Dimensions.get('window').height;
   const [layout, setLayout] = useState({
@@ -43,9 +43,28 @@ const newsCarousel = (props) => {
   });
 
   const [interval, setInterval] = React.useState(0);
+  console.log('Post index number:',interval)
 
   const carouselRef = React.useRef()
 
+  const bullets = (carouselRef, interval) => {
+    return <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "center",
+      }}
+    >
+      {posts.map((image, i) => {
+        return <Text
+          key={i}
+          onPress={() => {
+            carouselRef.current.scrollToOffset({ animated: true, offset: i*100 });
+            console.log('Clicked bullet number:',i)
+          }}
+          style={[styles.bulletstyle, { opacity: interval == i ? 0.6 : 0.42 }]}
+        >•</Text>
+      })}</View>
+  }
 
   return (
     <View>
@@ -53,24 +72,25 @@ const newsCarousel = (props) => {
         horizontal
         pagingEnabled
         onLayout={(event) => setLayout(event.nativeEvent.layout)}
-        onScroll={(event) => {let i = Math.round((event.nativeEvent.contentOffset.x / event.nativeEvent.contentSize.width) / (1 / mediaArray.length)); setInterval(i);}}
-        data={mediaArray}
+        onScroll={(event) => { let i = Math.round((event.nativeEvent.contentOffset.x / event.nativeEvent.contentSize.width) / (1 / posts.length)); setInterval(i); }}
+        data={posts}
         ref={carouselRef}
-        style={{paddingTop: (layout.height > windowHeight * 0.75) ? 50 : 0}}
+        keyExtractor={(item, index) => index.toString()}
+        style={{ paddingTop: (layout.height > windowHeight * 0.75) ? 50 : 0 }}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Single', { file: item })}
+              onPress={() => navigation.navigate('Single', { html: item.html })}
               style={{ width: layout.width, alignItems: 'center' }}>
               <Image
                 style={{
-                  aspectRatio: 2/1,
+                  aspectRatio: 2 / 1,
                   width: "100%",
                   maxHeight: windowHeight * 0.75,
                   resizeMode: 'stretch'
                 }}
-                source={{ uri: item.thumbnails.w160 }}
+                source={{ uri: item.image }}
               />
               <Text>{item.title}</Text>
             </TouchableOpacity>
@@ -82,24 +102,6 @@ const newsCarousel = (props) => {
     </View>
 
   )
-}
-
-const bullets = (carouselRef, interval) => {
-  return <View
-    style={{
-      flexDirection: "row",
-      justifyContent: "center",
-    }}
-  >
-    {mediaArray.map((image) => {
-    return <Text
-      key={image.key}
-      onPress={() => {
-        carouselRef.current.scrollToIndex({ animated: true, index: image.key });
-      }}
-      style={[styles.bulletstyle, { opacity: interval == image.key ? 0.6 : 0.42 }]}
-    >•</Text>
-  })}</View>
 }
 
 const styles = StyleSheet.create({

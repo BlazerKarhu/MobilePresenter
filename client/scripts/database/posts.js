@@ -1,22 +1,6 @@
 import doFetch from '../utils/fetch'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-/* const url = convertIp(baseUrl) + 'api/posts'
-const usePosts = () => {
-    const upload = async (fd, userToken) => {
-        const options = {
-            method: 'POST',
-            headers: { 'x-access-token': userToken },
-            data: fd,
-        };
-        try {
-        } catch (error) {
-            throw new Error(error.message)
-        }
-    }
-    return { upload }
-} */
-
 export const uploadPost = async (title, image, html, onDone = () => {} ) => {
     const userToken = await AsyncStorage.getItem("userToken")
     
@@ -34,5 +18,22 @@ export const uploadPost = async (title, image, html, onDone = () => {} ) => {
     onDone(result)
     return result
 }
+const getPosts = async (onDone) => {
+    const result = await doFetch('api/posts',
+        {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        });
 
-export default { uploadPost }
+    console.log(result)
+
+    if (result.message != undefined && result.message == "success") {
+        onDone(result)
+        return result
+    } else {
+        onDone(undefined)
+        return undefined
+    }
+}
+
+export default { uploadPost, getPosts }

@@ -58,7 +58,6 @@ const Post = ({ navigation }) => {
           top: 0; right: 0; bottom: 0; left: 0;`}}
         placeholder={'please input content'}
         disabled={false}
-        initialContentHTML={'Hello <b>World</b> <p>this is a new paragraph</p> <p>this is another new paragraph</p>'}
         useContainer
       />
       <KeyboardAvoidingView>
@@ -216,7 +215,7 @@ const styles = StyleSheet.create({
   toolbar: {
   },
   toolbarcontainer: {
-    margin: 'auto'
+    margin: 'auto',
   }
 });
 

@@ -10,9 +10,11 @@ import media from '../../database/media';
 import { uploadPost } from '../../database/posts'
 import Dialog from '../modals/DialogModal';
 import { MainContext } from '../../contexts/MainContext';
+import { isVisible } from '../../utils/visible';
 
 
 const picker = (props) => {
+    const mounted = isVisible()
     const { visible, html: html, onDone } = props;
 
     const { update, setUpdate } = useContext(MainContext);
@@ -68,6 +70,8 @@ const picker = (props) => {
             }
         })
     }
+
+    if(!mounted) return null;
 
     return (
         <View>

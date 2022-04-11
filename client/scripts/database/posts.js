@@ -25,8 +25,6 @@ const getPosts = async (onDone) => {
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         });
 
-    console.log(result)
-
     if (result.message != undefined && result.message == "success") {
         onDone(result)
         return result

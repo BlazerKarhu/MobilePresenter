@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
+import React, { memo, PureComponent, useRef, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions, Touchable, TouchableNativeFeedback } from 'react-native';
 import PropTypes from 'prop-types';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { isMounted, isVisible } from '../utils/visible';
+import { convertIp } from '../utils/debug';
 
-const newsCarousel = (props) => {
-  const { navigation, posts } = props;
-
-  const windowHeight = Dimensions.get('window').height;
+const newsCarousel = ({ navigation, posts, style }) => {
+  const visible = isVisible()
+  const mounted = isMounted()
   const [layout, setLayout] = useState({
     width: 0,
     height: 0,
   });
 
   const [interval, setInterval] = React.useState(0);
-  console.log('Post index number:',interval)
+  const onIntervalChange = useRef((items) => { 
+    if(!visible || !mounted || items.viewableItems.length == 0) return;
+    setInterval(items.viewableItems[0].index)
+  })
 
   const carouselRef = React.useRef()
 
+  if(!visible || !mounted) return null
+
   const bullets = (carouselRef, interval) => {
-    return <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "center",
-      }}
-    >
-      {posts.map((image, i) => {
-        return <Text
-          key={i}
-          onPress={() => {
-            carouselRef.current.scrollToOffset({ animated: true, offset: i*100 });
-            console.log('Clicked bullet number:',i)
-          }}
-          style={[styles.bulletstyle, { opacity: interval == i ? 0.6 : 0.42 }]}
+    return <FlatList
+      horizontal
+      data={posts}
+      keyExtractor={(_, index) => "b" + index}
+      contentContainerStyle={{marginLeft: 'auto', marginRight: 'auto'}}
+      renderItem={({ item, index }) =>
+        <Text
+          onPress={() => carouselRef.current.scrollToIndex({ animated: true, index: index })}
+          style={[styles.bulletstyle, { opacity: interval == index ? 0.6 : 0.42 }]}
         >•</Text>
-      })}</View>
+      }></FlatList>
   }
 
   return (
@@ -42,12 +42,15 @@ const newsCarousel = (props) => {
         horizontal
         pagingEnabled
         onLayout={(event) => setLayout(event.nativeEvent.layout)}
-        onScroll={(event) => { let i = Math.round((event.nativeEvent.contentOffset.x / event.nativeEvent.contentSize.width) / (1 / posts.length)); setInterval(i); }}
+        onViewableItemsChanged={onIntervalChange.current}
         data={posts}
         ref={carouselRef}
-        keyExtractor={(item, index) => index.toString()}
-        style={{ paddingTop: (layout.height > windowHeight * 0.75) ? 50 : 0 }}
+        keyExtractor={(_, index) => "c" + index}
+        style={[{ paddingTop: (layout.height >= 400) ? 50 : 0 },style]}
         showsHorizontalScrollIndicator={false}
+        getItemLayout={(_, index) => (
+          { length: layout.width, offset: layout.width * index, index }
+        )}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
@@ -57,10 +60,10 @@ const newsCarousel = (props) => {
                 style={{
                   aspectRatio: 2 / 1,
                   width: "100%",
-                  maxHeight: windowHeight * 0.75,
+                  maxHeight: 400,
                   resizeMode: 'stretch'
                 }}
-                source={{ uri: item.image }}
+                source={{ uri: convertIp(item.image) }}
               />
               <Text>{item.title}</Text>
             </TouchableOpacity>

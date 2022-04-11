@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, Text, Image, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import PropTypes from 'prop-types';
+import { convertIp } from '../utils/debug';
 
 const Single = ({ route }) => {
   const { html } = route.params;
@@ -25,11 +26,10 @@ const Single = ({ route }) => {
             </head>
             <body>
               <div style="max-width: 100%;height: auto;width: auto; /* for ie9 */">
-                ${html}
+                ${convertIp(html)}
               </div>
             </body>
           </html>` }} 
-
       />
     </>
   );

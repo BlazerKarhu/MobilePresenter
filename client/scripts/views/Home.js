@@ -55,7 +55,7 @@ const Home = (props) => {
 
 
 
-      {isLoggedIn && <Fab style={{ position: 'absolute', bottom: 0, left: 0 }} actions={actions} onPressItem={name => navigation.navigate(name)} />}
+      {isLoggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name)} />}
 
       <LoginModal
         visible={loginForm}
@@ -92,13 +92,9 @@ Home.propTypes = {
 const actions = [
   {
     text: "Post",
-    icon: require("../../assets/adaptive-icon.png"),
-    name: "Post"
-  },
-  {
-    text: "Tag",
-    icon: require("../../assets/favicon.png"),
-    name: "Tags"
+    icon: require("../../assets/plus.svg"),
+    name: "Post",
+    color: "rgb(45, 214, 89)",
   }
 ];
 

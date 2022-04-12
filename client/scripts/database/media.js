@@ -28,7 +28,7 @@ export const uploadMedia = async (base64, onDone = () => { }) => {
 
     if (result.message != undefined && result.message == "success") {
         const path = result.data.path
-        const ret = path.slice(0, "http".length) == "http" ? path : convertIp(baseUrl).slice(0, convertIp(baseUrl).length - 1) + path
+        const ret = path.slice(0, "http".length) == "http" ? path : baseUrl.slice(0, baseUrl.length - 1) + path
         onDone(ret)
         return ret
     }

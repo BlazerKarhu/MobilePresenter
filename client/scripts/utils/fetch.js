@@ -9,6 +9,7 @@ const doFetch = async (url, options = {}) => {
 
   if (!response.ok) // Status not between 200-299
   {
+    console.log(response)
     if (response.status == 401) // Attempt to re-authenticate
     {
       return await fetchReAuthenticate(url, options, response)

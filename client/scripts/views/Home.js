@@ -27,13 +27,13 @@ const Home = (props) => {
     })
   }, [update])
 
-  const carousel = <NewsCarousel navigation={navigation} posts={posts.slice(0,4)} />
+  const carousel = <NewsCarousel style={{backgroundColor: 'white'}} navigation={navigation} posts={posts.slice(0, 4)} />
 
 
   return (
     <SafeAreaProvider>
 
-        <NewsList ListHeaderComponent={carousel} style={{ height: 0 }}navigation={navigation} posts={posts} />
+      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} posts={posts} />
 
       <View style={styles.buttonView}>
 
@@ -72,14 +72,13 @@ const Home = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     justifyContent: 'center',
     flex: 1,
     height: '100%'
   },
   buttonView: {
     top: 10,
-    right: 10,
+    right: 20,
     position: 'absolute',
   },
 });
@@ -92,7 +91,7 @@ Home.propTypes = {
 const actions = [
   {
     text: "Post",
-    icon: require("../../assets/plus.svg"),
+    icon: require("../../assets/plus.png"),
     name: "Post",
     color: "rgb(45, 214, 89)",
   }

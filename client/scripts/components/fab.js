@@ -22,7 +22,7 @@ const fab = (props) => {
         onOpen={() => {
           actions.length != 1 && setInternalActions(actions)
         }}
-        onPressItem={(name) => { setTimeout(() => onPressItem(name),500) }}
+        onPressItem={(name) => onPressItem(name)}
       />
   )
 

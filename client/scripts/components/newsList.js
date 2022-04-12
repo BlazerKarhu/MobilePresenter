@@ -3,8 +3,10 @@ import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions, 
 import { convertIp } from '../utils/debug';
 import { isMounted, isVisible } from '../utils/visible';
 
+import Card from './card';
+
 const targetwidth = 500 // When a single view should be cut off width wise. Target width for each item.
-const margin = 10
+const margin = 20
 
 
 
@@ -41,14 +43,9 @@ const NewsList = (props) => {
       keyExtractor={(_, index) => "l" + index}
       renderItem={({ item }) => {
         return (
-          <TouchableOpacity
-            onPress={() => { navigation.navigate('Single', { html: item.html }); console.log(item.image) }}
-            style={[styles.newsItem, { width: itemWidth }]}>
-            <ImageBackground source={{ uri: convertIp(item.image) }} resizeMode={"cover"} style={{ aspectRatio: 2 / 1 }}></ImageBackground>
-            <View>
-              <Text>{item.title}</Text>
-            </View>
-          </TouchableOpacity>
+          <Card 
+          onPress={() => { navigation.navigate('Single', { html: item.html }); console.log(item.image) }}
+          style={[styles.newsItem, { width: itemWidth, elevation: 5 }]} text={item.title} image={item.image}/>
         )
       }}
     />

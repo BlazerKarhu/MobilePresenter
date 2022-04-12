@@ -1,8 +1,9 @@
 import React, { memo, PureComponent, useRef, useState } from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions, Touchable, TouchableNativeFeedback } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text, Dimensions, Touchable, TouchableNativeFeedback, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { isMounted, isVisible } from '../utils/visible';
 import { convertIp } from '../utils/debug';
+import Card from './card';
 
 const newsCarousel = ({ navigation, posts, style }) => {
   const visible = isVisible()
@@ -30,14 +31,14 @@ const newsCarousel = ({ navigation, posts, style }) => {
       contentContainerStyle={{marginLeft: 'auto', marginRight: 'auto'}}
       renderItem={({ item, index }) =>
         <Text
-          onPress={() => carouselRef.current.scrollToIndex({ animated: true, index: index })}
+          onPress={() => carouselRef.current.scrollToIndex({ animated: true, index: index})}
           style={[styles.bulletstyle, { opacity: interval == index ? 0.6 : 0.42 }]}
         >•</Text>
       }></FlatList>
   }
 
   return (
-    <View>
+    <View style={style}>
       <FlatList
         horizontal
         pagingEnabled
@@ -46,27 +47,20 @@ const newsCarousel = ({ navigation, posts, style }) => {
         data={posts}
         ref={carouselRef}
         keyExtractor={(_, index) => "c" + index}
-        style={[{ paddingTop: (layout.height >= 400) ? 50 : 0 },style]}
+        style={[{ paddingTop: (layout.height >= 400) ? 50 : 0 }]}
         showsHorizontalScrollIndicator={false}
         getItemLayout={(_, index) => (
           { length: layout.width, offset: layout.width * index, index }
         )}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Single', { html: item.html })}
-              style={{ width: layout.width, alignItems: 'center' }}>
-              <Image
-                style={{
-                  aspectRatio: 2 / 1,
-                  width: "100%",
-                  maxHeight: 400,
-                  resizeMode: 'stretch'
-                }}
-                source={{ uri: convertIp(item.image) }}
-              />
-              <Text>{item.title}</Text>
-            </TouchableOpacity>
+            <Card
+            onPress={() => navigation.navigate('Single', { html: item.html })}
+            style={{ width: layout.width, marginHorizontal: Platform.OS == 'web' ? 1 : undefined }}
+            contentContainerStyle={{width: "100%", maxHeight: 400, alignSelf:"center"}}
+            image={item.image}
+            text={item.title}
+            />
           )
         }}
       />

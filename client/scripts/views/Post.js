@@ -9,6 +9,8 @@ import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor"
 import selectMedia from '../utils/select';
 import { uploadMedia } from '../database/media';
 import Dialog from './modals/DialogModal';
+import { convertIp, revertIp } from '../utils/debug';
+import { StatusBar } from 'expo-status-bar';
 
 const Post = ({ navigation }) => {
   const [layout, setLayout] = useState({
@@ -94,6 +96,7 @@ const Post = ({ navigation }) => {
             if (result == undefined) return;
 
             uploadMedia(result.uri, (path) => {
+              console.log(path)
               // Path being undefined signified that an issue occured
               // For an example if the file size it too large
               // In such a case, save the image to html instead of as a file in the database.
@@ -101,14 +104,14 @@ const Post = ({ navigation }) => {
               const insertMedia = () => {
                 if (result.type == 'image') {
                   richText.current?.insertImage(
-                    `${path.error != undefined ? result.uri : path}`,
+                    `${path.error != undefined ? result.uri : convertIp(path)}`,
                     'background: gray; max-width:100%; max-height:100%; ',
                   );
                 }
                 else {
                   // No support for aligning in richText.current?.insertVideo(...), so done manually.
                   richText.current?.insertHTML(
-                    `<p><iframe src="${path.error != undefined ? result.uri : path}" style="max-width: 100%;display: inline;"/></p>`
+                    `<p><iframe src="${path.error != undefined ? result.uri : convertIp(path)}" style="max-width: 100%;display: inline;"/></p>`
                   );
                 }
               }
@@ -191,7 +194,7 @@ const Post = ({ navigation }) => {
           />}
       </KeyboardAvoidingView>
 
-      <PreviewModal visible={publishSelectorState} html={html} transparent={true} onDone={(postSuccess) => {
+      <PreviewModal visible={publishSelectorState} html={revertIp(html)} transparent={true} onDone={(postSuccess) => {
         setPublishSelectorState(false); if (postSuccess == true) navigation.goBack(null)
       }} />
       <Dialog
@@ -199,7 +202,6 @@ const Post = ({ navigation }) => {
         text={popupDialogContent.text} buttons={["Cancel", "Yes"]}
         onDone={(button) => { if (button == "Yes") popupDialogContent.onProceed(); setPopupDialogContent({ text: "", onProceed: () => { } }) }}>
       </Dialog>
-
 
     </SafeAreaView>
   );

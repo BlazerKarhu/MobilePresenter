@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, Text, Image, View } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import PropTypes from 'prop-types';
 import { convertIp } from '../utils/debug';
 
 const Single = ({ route }) => {
   const { html } = route.params;
-  console.log(html)
+  console.log(convertIp(html))
   return (
-    <>
-      <WebView
-        style={styles.container}
-        originWhitelist={['*']}
-        source={{ html: 
+
+    <WebView
+    style={styles.container}
+      nestedScrollEnabled
+      originWhitelist={['*']}
+      source={{
+        html:
           `<html>
             <head>
               <meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
               <style>
               * {outline: 0px solid transparent;-webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-touch-callout: none;box-sizing: border-box;}
               html, body { margin: 5; padding: 0;font-family: Arial, Helvetica, sans-serif; font-size:1em; height: 100%}
-              body { overflow-y: hidden; -webkit-overflow-scrolling: touch}
+              body { -webkit-overflow-scrolling: touch}
               .content {font-family: Arial, Helvetica, sans-serif;color: 'black'; width: 100%;padding-left: 0;padding-right: 0;}
               .pell { height: 100%;} .pell-content { outline: 0; overflow-y: auto;padding: 10px;height: 100%}
               </style>
@@ -29,9 +31,8 @@ const Single = ({ route }) => {
                 ${convertIp(html)}
               </div>
             </body>
-          </html>` }} 
-      />
-    </>
+          </html>` }}
+    />
   );
 };
 

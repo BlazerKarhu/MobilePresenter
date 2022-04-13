@@ -150,7 +150,7 @@ const picker = (props) => {
                                 min={0}
                             />
 
-                            <ScrollView>
+                            <ScrollView >
 
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: layout.width }}>
                                     {tags.selected.map((tag) => (
@@ -158,9 +158,8 @@ const picker = (props) => {
                                             color="#2196f3"
                                             key={tag}
                                             textColor="white"
-                                            margin={10}
                                             fontSize={20}
-                                            style={{ borderRadius: 1, padding: 10 }}
+                                            style={{ borderRadius: 1, padding: 10, flexGrow: 1, borderWidth: 10, borderColor: 'white' }}
                                             onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
                                         />)
                                     )}

@@ -154,8 +154,8 @@ const Post = ({ navigation }) => {
               size={32}
               color="#2196f3"
               textColor="white"
-              margin={10}
               fontSize={20}
+              style={{margin: 10}}
               onPress={() => setPublishSelectorState(true)}
             />)),
           }}

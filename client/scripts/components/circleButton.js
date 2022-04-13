@@ -4,7 +4,6 @@ const CircleButton = props => (
   <TouchableOpacity
     {...props}
     style={[props.style, {
-      margin: props.margin,
       height: props.size,
       width: props.size,
       backgroundColor: props.color,

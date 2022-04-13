@@ -72,7 +72,6 @@ const picker = (props) => {
                                     size={35}
                                     color="#2196f3"
                                     textColor="white"
-                                    margin={10}
                                     fontSize={20}
                                     style={styles.modalContentEnd}
                                     onPress={() => doLogin()}
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
     },
     modalContentTop: { justifyContent: 'flex-start' },
     image: { width: '100%', aspectRatio: 2 / 1, backgroundColor: 'lightblue', elevation: 5, margin: 10, borderWidth: 0.5, borderColor: 'gray' },
-    modalContentEnd: { alignSelf: 'flex-end', elevation: 5 },
+    modalContentEnd: { alignSelf: 'flex-end', elevation: 5, margin: 10 },
     input: {
         height: 40,
         margin: 20,

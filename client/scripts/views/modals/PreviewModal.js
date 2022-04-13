@@ -63,8 +63,6 @@ const picker = (props) => {
                     console.log('upload response', resp) // TODO: Add tags to resp.postId
                     setUpdate(!update);
                     onExit(true);
-
-                    uploadTags(resp.data.postId, tags.selected)
                 }
                 else {
                     setErrorDialog(resp.error)

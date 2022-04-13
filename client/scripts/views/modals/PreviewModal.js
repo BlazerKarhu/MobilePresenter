@@ -13,6 +13,7 @@ import { MainContext } from '../../contexts/MainContext';
 import { isVisible } from '../../utils/visible';
 import Card from '../../components/card';
 import { StatusBar } from 'expo-status-bar';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const picker = (props) => {
@@ -96,13 +97,15 @@ const picker = (props) => {
                                 <ExpandingTextInput
                                     placeholder={'Title'}
                                     placeholderTextColor="white"
-                                    style={{ maxHeight: '40%', color:'white', textShadowColor: 'rgba(0, 0, 0, 0.75)', fontWeight: "400", textShadowOffset: { width: -1, height: 1 }, textShadowRadius: 10  }}
+                                    style={{ maxHeight: '40%', color: 'white', textShadowColor: 'rgba(0, 0, 0, 0.75)', fontWeight: "400", textShadowOffset: { width: -1, height: 1 }, textShadowRadius: 10 }}
                                     maxLength={100}
                                     onChange={(input) => {
                                         setTitle(input);
                                     }} />
 
                             </Card>
+
+
 
                             <DropDownPicker
                                 open={tagsDropdownOpen}
@@ -147,29 +150,32 @@ const picker = (props) => {
                                 min={0}
                             />
 
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: layout.width }}>
-                                {tags.selected.map((tag) => (
-                                    <CircleButton text={tag[0].toUpperCase() + tag.slice(1)}
-                                        color="#2196f3"
-                                        key={tag}
-                                        textColor="white"
-                                        margin={10}
-                                        fontSize={20}
-                                        style={{ borderRadius: 1, padding: 10 }}
-                                        onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
-                                    />)
-                                )}
-                            </View>
+                            <ScrollView>
 
-                            <CircleButton text='➤'
-                                size={35}
-                                color="#2196f3"
-                                textColor="white"
-                                margin={10}
-                                fontSize={20}
-                                style={styles.modalContentEnd}
-                                onPress={() => doPost()}
-                            />
+                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: layout.width }}>
+                                    {tags.selected.map((tag) => (
+                                        <CircleButton text={tag[0].toUpperCase() + tag.slice(1)}
+                                            color="#2196f3"
+                                            key={tag}
+                                            textColor="white"
+                                            margin={10}
+                                            fontSize={20}
+                                            style={{ borderRadius: 1, padding: 10 }}
+                                            onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
+                                        />)
+                                    )}
+                                </View>
+
+                                <CircleButton text='➤'
+                                    size={35}
+                                    color="#2196f3"
+                                    textColor="white"
+                                    margin={10}
+                                    fontSize={20}
+                                    style={styles.modalContentEnd}
+                                    onPress={() => doPost()}
+                                />
+                            </ScrollView>
                             <Dialog
                                 visible={errorDialog != ''}
                                 text={errorDialog} buttons={["Ok"]}

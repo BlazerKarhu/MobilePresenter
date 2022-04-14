@@ -23,7 +23,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                 }else{
                     // Table just created, creating some rows
                     var insert = 'INSERT INTO posts (title, image, html) VALUES (?,?,?)'
-                    db.run(insert, ["Welcome","https://yeyelife.com/wp-content/uploads/2020/09/welcome.jpg","<center>Welcome to the application! Here you can find relevant news catered just for you!</center>"])
+                    db.run(insert, ["Welcome","https://github.com/Cyroxin/MobilePresenter/raw/main/client/assets/welcome.jpg","<center>Welcome to the application! Here you can find relevant news catered just for you!</center>"])
                 }
             });
 

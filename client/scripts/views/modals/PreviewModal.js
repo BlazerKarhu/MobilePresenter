@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, StyleSheet, Text, View, TouchableWithoutFeedback, ImageBackground, Alert } from 'react-native';
 import PropTypes from 'prop-types';
-import { Platform } from 'expo-modules-core';
 import ExpandingTextInput from '../../components/expandingTextInput';
 import CircleButton from '../../components/circleButton';
 import selectMedia from '../../utils/select';
 import DropDownPicker from 'react-native-dropdown-picker';
 import media from '../../database/media';
 import { uploadPost } from '../../database/posts'
+import { uploadTags } from '../../database/tags';
 import Dialog from '../modals/DialogModal';
 import { MainContext } from '../../contexts/MainContext';
 import { isVisible } from '../../utils/visible';
 import Card from '../../components/card';
-import { StatusBar } from 'expo-status-bar';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
@@ -59,9 +58,19 @@ const picker = (props) => {
             console.log('doPost image path:', imagePath)
 
             if (imagePath.error == undefined) {
+                console.log('Number of tags selected:', tags.selected.length)
                 const resp = await uploadPost(title, imagePath, html)
+                console.log('PostId',resp.id)
                 if (resp.error == undefined) {
+                    //if tags selected for post, add them into the post
+                    if (tags.selected.length != undefined) {
+                        for (let i = 0; i < tags.selected.length; i++) {
+                            console.log(tags.selected[i])
+                            const tagresp = await uploadTags(resp.id, tags.selected[i])
+                        }
+                    }
                     console.log('upload response', resp) // TODO: Add tags to resp.postId
+
                     setUpdate(!update);
                     onExit(true);
                 }
@@ -211,7 +220,7 @@ const styles = StyleSheet.create({
 picker.defaultProps = {
     tags:
         [
-            { label: 'Announcements', value: 'announcements' },
+            { label: 'Important', value: 'important' },
             { label: 'News', value: 'news' },
             { label: 'Summary', value: 'summary' },
             { label: 'World', value: 'world' },

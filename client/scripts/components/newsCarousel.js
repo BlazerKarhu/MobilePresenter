@@ -55,7 +55,7 @@ const newsCarousel = ({ navigation, posts, style }) => {
         renderItem={({ item }) => {
           return (
             <Card
-            onPress={() => navigation.navigate('Single', { html: item.html })}
+            onPress={() => navigation.navigate('Single', { html: item.html, postId: item.postId })}
             style={{ width: layout.width, marginHorizontal: Platform.OS == 'web' ? 1 : undefined }}
             contentContainerStyle={{width: "100%", maxHeight: 400, alignSelf:"center"}}
             image={item.image}

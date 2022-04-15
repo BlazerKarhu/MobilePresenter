@@ -7,7 +7,7 @@ const router = express.Router()
 router.get("/", (req, res, next) => {
     console.log("Tags:" + req.query.tags)
     if (req.query.tags == "important") {
-        var sql = "select * from posts LEFT JOIN tags ON posts.postId = tags.postId WHERE tags.tag IN ('Important')"
+        var sql = "select * from posts LEFT JOIN tags ON posts.postId = tags.postId WHERE tags.tag IN ('important')"
         var params = []
         db.all(sql, params, (err, rows) => {
             if (err) {
@@ -20,6 +20,7 @@ router.get("/", (req, res, next) => {
             })
         });
     } else {
+        //"select * from posts LEFT JOIN tags ON posts.postId = tags.postId WHERE tags.tag NOT IN () GROUP BY posts.postId"
         var sql = "select * from posts"
         var params = []
         db.all(sql, params, (err, rows) => {
@@ -33,7 +34,6 @@ router.get("/", (req, res, next) => {
             })
         });
     }
-
 });
 
 // Add post

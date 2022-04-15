@@ -5,8 +5,9 @@ import PropTypes from 'prop-types';
 import { convertIp } from '../utils/debug';
 
 const Single = ({ route }) => {
-  const { html } = route.params;
+  const { html, postId } = route.params;
   console.log(convertIp(html))
+  console.log(postId)
   return (
 
     <WebView

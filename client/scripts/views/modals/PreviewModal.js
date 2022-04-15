@@ -29,7 +29,7 @@ const picker = (props) => {
     const [title, setTitle] = useState('')
 
     const [tags, setTags] = useState(["important", "notimportant", "news", "announcements"]);
-    const [selected, setSelected] = useState(["important"]);
+    const [selected, setSelected] = useState([]);
 
     const [errorDialog, setErrorDialog] = useState('');
 
@@ -48,15 +48,15 @@ const picker = (props) => {
             console.log('doPost image path:', imagePath)
 
             if (imagePath.error == undefined) {
-                console.log('Number of tags selected:', tags.selected.length)
+                console.log('Number of tags selected:', selected.length)
                 const resp = await uploadPost(title, imagePath, html)
                 console.log('PostId',resp.id)
                 if (resp.error == undefined) {
                     //if tags selected for post, add them into the post
-                    if (tags.selected.length != undefined) {
-                        for (let i = 0; i < tags.selected.length; i++) {
-                            console.log(tags.selected[i])
-                            const tagresp = await uploadTags(resp.id, tags.selected[i])
+                    if (selected.length != undefined) {
+                        for (let i = 0; i < selected.length; i++) {
+                            console.log(selected[i])
+                            const tagresp = await uploadTags(resp.id, selected[i])
                         }
                     }
                     console.log('upload response', resp) // TODO: Add tags to resp.postId

@@ -18,16 +18,22 @@ const Home = (props) => {
   const { update } = useContext(MainContext);
 
   const [posts, setPosts] = useState([]);
+  const [carouselPosts, setCarouselPosts] = useState([]);
   useEffect(async () => {
     console.log("Update")
-    postDb.getPosts((posts) => {
+    postDb.getPosts(['important'], (posts) => {
+      if (posts.data != undefined) {
+        setCarouselPosts(posts.data)
+      }
+    })
+    postDb.getPosts([], (posts) => {
       if (posts.data != undefined) {
         setPosts(posts.data)
       }
     })
   }, [update])
 
-  const carousel = <NewsCarousel style={{backgroundColor: 'white'}} navigation={navigation} posts={posts.slice(0, 4)} />
+  const carousel = <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} posts={carouselPosts.slice(0, 4)} />
 
 
   return (

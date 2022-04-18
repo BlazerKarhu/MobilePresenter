@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Modal, StyleSheet, Text, View, TouchableWithoutFeedback, ImageBackground, Alert } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { Modal, StyleSheet, Text, View, TouchableWithoutFeedback, } from 'react-native';
 import PropTypes from 'prop-types';
 import ExpandingTextInput from '../../components/expandingTextInput';
 import CircleButton from '../../components/circleButton';
 import selectMedia from '../../utils/select';
-import DropDownPicker from 'react-native-dropdown-picker';
 import media from '../../database/media';
 import { uploadPost } from '../../database/posts'
 import { uploadTags } from '../../database/tags';
@@ -12,7 +11,7 @@ import Dialog from '../modals/DialogModal';
 import { MainContext } from '../../contexts/MainContext';
 import { isVisible } from '../../utils/visible';
 import Card from '../../components/card';
-import { ScrollView } from 'react-native-gesture-handler';
+import TagsDropdownPicker from '../../components/tagsDropdownPicker';
 
 
 const picker = (props) => {
@@ -114,67 +113,8 @@ const picker = (props) => {
 
                             </Card>
 
-
-
-                            <DropDownPicker
-                                open={tagsDropdownOpen}
-                                /*TODO: Load list and set this with state => loading={loading} */
-                                items={tags.tags}
-                                value={tags.selected}
-                                setOpen={setTagsDropdownOpen}
-                                // setValue={setValue}
-                                onSelectItem={(s) => setTagsWithSelected(s.map((t) => t.value))}
-                                searchable={true}
-                                multiple={true}
-                                placeholder='Select tags'
-                                multipleText='Select tags'
-                                dropDownDirection="TOP"
-                                showTickIcon={false}
-                                showArrowIcon={false}
-                                style={{ backgroundColor: '#fff', borderColor: 'gray', borderWidth: 0.5, padding: 15, textAlign: 'center', elevation: 10 }}
-                                containerStyle={{ height: 50, width: '90%', maxWidth: '99%', alignSelf: 'center' }}
-                                listItemContainerStyle={{
-                                    padding: 10,
-                                }}
-
-                                dropDownContainerStyle={{
-                                    /*Selector*/
-                                    borderRadius: 0,
-                                    borderColor: 'gray',
-                                    borderWidth: 0,
-                                    borderLeftWidth: 0.5,
-                                    borderRightWidth: 0.5,
-                                    borderTopWidth: 0.5,
-                                }}
-                                searchTextInputStyle={{
-                                    borderRadius: 0,
-                                    borderColor: 'gray',
-                                    borderWidth: 0,
-                                }}
-
-
-
-                                addCustomItem={true}
-                                selectedItemContainerStyle={{ /*behind each dropdown item */ }}
-                                min={0}
-                            />
-
-                            <ScrollView >
-
-                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: layout.width }}>
-                                    {tags.selected.map((tag) => (
-                                        <CircleButton text={tag[0].toUpperCase() + tag.slice(1)}
-                                            color="#2196f3"
-                                            key={tag}
-                                            textColor="white"
-                                            fontSize={20}
-                                            style={{ borderRadius: 1, padding: 10, flexGrow: 1, borderWidth: 10, borderColor: 'white' }}
-                                            onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
-                                        />)
-                                    )}
-                                </View>
-
-                                <CircleButton text='➤'
+                            <TagsDropdownPicker />
+                            <CircleButton text='➤'
                                     size={35}
                                     color="#2196f3"
                                     textColor="white"
@@ -183,7 +123,6 @@ const picker = (props) => {
                                     style={styles.modalContentEnd}
                                     onPress={() => doPost()}
                                 />
-                            </ScrollView>
                             <Dialog
                                 visible={errorDialog != ''}
                                 text={errorDialog} buttons={["Ok"]}

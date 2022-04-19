@@ -5,20 +5,36 @@ const router = express.Router()
 
 // Get posts
 router.get("/", (req, res, next) => {
-    var sql = "select * from posts"
-    var params = []
-    db.all(sql, params, (err, rows) => {
-        if (err) {
-            res.status(400).json({ "error": err.message });
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": rows
-        })
-    });
-});
+    console.log("Tags:" + req.query.tags)
+    if (req.query.tags == "important") {
+        var sql = "select * from posts LEFT JOIN tags ON posts.postId = tags.postId WHERE tags.tag IN ('Important')"
+        var params = []
+        db.all(sql, params, (err, rows) => {
+            if (err) {
+                res.status(400).json({ "error": err.message });
+                return;
+            }
+            res.json({
+                "message": "success",
+                "data": rows
+            })
+        });
+    } else {
+        var sql = "select * from posts"
+        var params = []
+        db.all(sql, params, (err, rows) => {
+            if (err) {
+                res.status(400).json({ "error": err.message });
+                return;
+            }
+            res.json({
+                "message": "success",
+                "data": rows
+            })
+        });
+    }
 
+});
 
 // Add post
 router.post("/", (req, res, next) => {

@@ -5,17 +5,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import CircleButton from './circleButton';
 import PropTypes from 'prop-types';
 
-const TagsDropdownPicker = (props) => {
-    const setTagsWithSelected = (s) => {
-        setTags({
-            tags: props.tags.filter((tag) => !s.includes(tag.value)),
-            selected: s
-        })
-    }
-    const [tags, setTags] = useState({
-        tags: props.tags,
-        selected: [],
-    });
+const TagsDropdownPicker = ({tags, onTagSelected}) => {
+
     const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
     return (
         <>
@@ -26,7 +17,7 @@ const TagsDropdownPicker = (props) => {
                 value={tags.selected}
                 setOpen={setTagsDropdownOpen}
                 // setValue={setValue}
-                onSelectItem={(s) => setTagsWithSelected(s.map((t) => t.value))}
+                onSelectItem={(s) => onTagSelected(s.map((t) => t.value))}
                 searchable={true}
                 multiple={true}
                 placeholder='Select tags'

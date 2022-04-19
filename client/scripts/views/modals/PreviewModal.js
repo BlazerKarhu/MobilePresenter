@@ -29,11 +29,11 @@ const picker = (props) => {
     const [title, setTitle] = useState('')
 
     const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
+
     const [tags, setTags] = useState({
-        tags: props.tags,
-        selected: [],
+        unselectedTags: props.tags,
+        selectedTags: [],
     });
-    const [errorDialog, setErrorDialog] = useState('');
 
     const setTagsWithSelected = (s) => {
         setTags({
@@ -41,6 +41,8 @@ const picker = (props) => {
             selected: s
         })
     }
+
+    const [errorDialog, setErrorDialog] = useState('');
 
     const onExit = (postSuccess = false) => {
         onDone(postSuccess);
@@ -113,7 +115,17 @@ const picker = (props) => {
 
                             </Card>
 
-                            <TagsDropdownPicker />
+                            <TagsDropdownPicker 
+                            tags={tags}
+                            onTagClicked={(dropdownTags, selected)=>{
+                                if (selected) {
+                                    setTags({selectedTags: dropdownTags, unselectedTags: props.tags.filter()})
+                                } else {
+                                    
+                                }
+                                setTagsWithSelected(s.map((t) => t.value))
+                            }} />
+
                             <CircleButton text='➤'
                                     size={35}
                                     color="#2196f3"
@@ -156,17 +168,6 @@ const styles = StyleSheet.create({
     modalContentEnd: { alignSelf: 'flex-end', elevation: 5 }
 });
 
-picker.defaultProps = {
-    tags:
-        [
-            { label: 'Important', value: 'important' },
-            { label: 'News', value: 'news' },
-            { label: 'Summary', value: 'summary' },
-            { label: 'World', value: 'world' },
-            { label: 'Insider', value: 'insider' },
-            { label: 'Misc', value: 'misc' },
-        ]
-}
 
 
 picker.propTypes = {

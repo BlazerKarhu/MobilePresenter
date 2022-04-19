@@ -5,19 +5,29 @@ import { ScrollView } from 'react-native-gesture-handler';
 import CircleButton from './circleButton';
 import PropTypes from 'prop-types';
 
-const TagsDropdownPicker = ({tags, onTagSelected}) => {
+const TagsDropdownPicker = ({tags, selected, onSelectedChange}) => {
 
     const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
+
+    const unselected = (_tags, _selected) => _tags.filter(i => !_selected.includes(i))
+
+    const tagListAsObject = () => unselected(tags,selected).map((tag) => { 
+        return  { label: tag[0].toUpperCase() + tag.slice(1).toLowerCase(), value: tag.toLowerCase() }
+    })
+
     return (
         <>
             <DropDownPicker
-                open={tagsDropdownOpen}
                 /*TODO: Load list and set this with state => loading={loading} */
-                items={tags.tags}
-                value={tags.selected}
-                setOpen={setTagsDropdownOpen}
                 // setValue={setValue}
-                onSelectItem={(s) => onTagSelected(s.map((t) => t.value))}
+                open={tagsDropdownOpen}
+                setOpen={setTagsDropdownOpen}
+                items={tagListAsObject()}
+                value={selected}
+                onSelectItem={(s) => { 
+                    const newSelected = s.map(t => t.value)
+                    onSelectedChange(newSelected) }
+                }
                 searchable={true}
                 multiple={true}
                 placeholder='Select tags'
@@ -51,14 +61,14 @@ const TagsDropdownPicker = ({tags, onTagSelected}) => {
             <ScrollView >
 
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: "100%" }}>
-                    {tags.selected.map((tag) => (
-                        <CircleButton text={tag[0].toUpperCase() + tag.slice(1)}
+                    {selected.map((tag) => (
+                        <CircleButton text={tag}
                             color="#2196f3"
                             key={tag}
                             textColor="white"
                             fontSize={20}
                             style={{ borderRadius: 1, padding: 10, flexGrow: 1, borderWidth: 10, borderColor: 'white' }}
-                            onPress={() => setTagsWithSelected(tags.selected.filter((t) => t != tag))}
+                            onPress={() => onSelectedChange(selected.filter((t) => t != tag)) }
                         />)
                     )}
                 </View>
@@ -70,15 +80,9 @@ const TagsDropdownPicker = ({tags, onTagSelected}) => {
 
 }
 TagsDropdownPicker.defaultProps = {
-    tags:
-        [
-            { label: 'Important', value: 'important' },
-            { label: 'News', value: 'news' },
-            { label: 'Summary', value: 'summary' },
-            { label: 'World', value: 'world' },
-            { label: 'Insider', value: 'insider' },
-            { label: 'Misc', value: 'misc' },
-        ]
+    tags: [ 'important' , 'news', 'summary', 'world','insider', 'misc' ],
+    selected: [],
+    onSelectedChange: (selectedTags) => {}
 }
 TagsDropdownPicker.propTypes = {
     navigation: PropTypes.object,

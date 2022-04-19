@@ -28,19 +28,8 @@ const picker = (props) => {
     const [image, setImage] = useState(undefined)
     const [title, setTitle] = useState('')
 
-    const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
-
-    const [tags, setTags] = useState({
-        unselectedTags: props.tags,
-        selectedTags: [],
-    });
-
-    const setTagsWithSelected = (s) => {
-        setTags({
-            tags: props.tags.filter((tag) => !s.includes(tag.value)),
-            selected: s
-        })
-    }
+    const [tags, setTags] = useState(["important", "notimportant", "news", "announcements"]);
+    const [selected, setSelected] = useState(["important"]);
 
     const [errorDialog, setErrorDialog] = useState('');
 
@@ -48,7 +37,7 @@ const picker = (props) => {
         onDone(postSuccess);
         setTitle('');
         setImage(undefined);
-        setTagsWithSelected([]);
+        setSelected([])
     }
 
     const doPost = async () => {
@@ -117,13 +106,10 @@ const picker = (props) => {
 
                             <TagsDropdownPicker 
                             tags={tags}
-                            onTagClicked={(dropdownTags, selected)=>{
-                                if (selected) {
-                                    setTags({selectedTags: dropdownTags, unselectedTags: props.tags.filter()})
-                                } else {
-                                    
-                                }
-                                setTagsWithSelected(s.map((t) => t.value))
+                            selected={selected}
+                            onSelectedChange={(selected)=>{
+                                console.log("Clicked, selected now: "+selected)
+                                setSelected(selected);
                             }} />
 
                             <CircleButton text='➤'

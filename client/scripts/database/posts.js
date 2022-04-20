@@ -53,4 +53,22 @@ const getPosts = async (tags=[], onDone=()=>{} ) => {
 
 }
 
-export default { uploadPost, getPosts }
+export const deletePost = async (postId, onDone = () => {} ) => {
+
+
+    const result = await doFetch('api/posts',
+        {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({'postId': postId})
+        });
+    if (result.message != undefined && result.message == "success") {
+        onDone(result)
+        return result
+    }
+
+    onDone(result)
+    return result
+}
+
+export default { uploadPost, getPosts, deletePost }

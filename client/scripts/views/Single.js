@@ -1,13 +1,51 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View, Button } from 'react-native';
 import { WebView } from 'react-native-webview';
 import PropTypes from 'prop-types';
 import { convertIp } from '../utils/debug';
+import { MainContext } from '../contexts/MainContext';
+import { deletePost } from '../database/posts'
+import media from '../database/media';
 
-const Single = ({ route }) => {
-  const { html, postId } = route.params;
+// const doDelete = async () => {
+// const resp = await deletePost(postId)
+// if (resp.error == undefined) {
+//     console.log('upload response', resp) 
+//     setUpdate(!update);
+//     onExit(true);
+// }
+// else {
+//   setErrorDialog(resp.error)
+// }
+// }
+
+
+const Single = ({ route, navigation }) => {
+  const { html, postId} = route.params;
   console.log(convertIp(html))
-  console.log(postId)
+  const { isLoggedIn } = useContext(MainContext);
+
+const doDelete = async () => {
+const resp = await deletePost(postId)
+
+}
+
+  {isLoggedIn &&
+    React.useLayoutEffect(() => {
+      navigation.setOptions({
+      headerRight: () => (
+      <View style={{margin:10}}>
+      <Button 
+      color="#FF0000"
+      onPress={() => doDelete()}
+      title="Delete post" />
+      </View>
+      ),
+      });
+      }, [navigation]);
+    }
+
+
   return (
 
     <WebView
@@ -43,6 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 40,
   },
   scrollView: {
     flex: 1,

@@ -21,35 +21,37 @@ import media from '../database/media';
 
 
 const Single = ({ route, navigation }) => {
-  const { html, postId} = route.params;
+  const { html, postId } = route.params;
   console.log(convertIp(html))
-  const { isLoggedIn } = useContext(MainContext);
+  const { isLoggedIn, update, setUpdate } = useContext(MainContext);
 
-const doDelete = async () => {
-const resp = await deletePost(postId)
+  const doDelete = async () => {
+    const resp = await deletePost(postId)
+    setUpdate(!update);
+    navigation.goBack(null)
+  }
 
-}
-
-  {isLoggedIn &&
+  {
+    isLoggedIn &&
     React.useLayoutEffect(() => {
       navigation.setOptions({
-      headerRight: () => (
-      <View style={{margin:10}}>
-      <Button 
-      color="#FF0000"
-      onPress={() => doDelete()}
-      title="Delete post" />
-      </View>
-      ),
+        headerRight: () => (
+          <View style={{ margin: 10 }}>
+            <Button
+              color="#FF0000"
+              onPress={() => doDelete()}
+              title="Delete post" />
+          </View>
+        ),
       });
-      }, [navigation]);
-    }
+    }, [navigation]);
+  }
 
 
   return (
 
     <WebView
-    style={styles.container}
+      style={styles.container}
       nestedScrollEnabled
       originWhitelist={['*']}
       source={{

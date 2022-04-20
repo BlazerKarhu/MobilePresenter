@@ -44,7 +44,7 @@ const NewsList = (props) => {
       renderItem={({ item }) => {
         return (
           <Card 
-          onPress={() => { navigation.navigate('Single', { html: item.html }); console.log(item.image) }}
+          onPress={() => { navigation.navigate('Single', { html: item.html, postId: item.postId }); console.log(item.image) }}
           style={[styles.newsItem, { width: itemWidth, elevation: 5 }]} text={item.title} image={item.image}/>
         )
       }}

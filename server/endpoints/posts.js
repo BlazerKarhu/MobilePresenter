@@ -56,4 +56,20 @@ router.post("/", (req, res, next) => {
     });
 })
 
+
+// Delete post
+
+router.delete("/", (req, res, next) => {
+    db.run(
+        'DELETE FROM posts WHERE postId = ?',
+        req.body.postId,
+        function (err, result) {
+            if (err){
+                res.status(400).json({"error": res.message})
+                return;
+            }
+            res.json({"message":"deleted", changes: this.changes})
+    });
+})
+
 module.exports = router

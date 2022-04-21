@@ -17,7 +17,7 @@ export var lastPassword = undefined
  */
 const login = async (username, password, onDone = () => { }) => {
     const url = convertIp(baseUrl) + 'api/login'
-    const options = 
+    const options =
     {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -25,40 +25,39 @@ const login = async (username, password, onDone = () => { }) => {
     };
 
     const response = await fetch(url, options);
-    const json = await response.json();
+    const json = await tryParseResponseJson(response)
 
-    if (json.error) {
-        console.log(response.status)
-
-        // if API response contains error message (use Postman to get further details)
-        throw new Error(json.message + ': ' + json.error);
-
-    } else if (!response.ok) {
-        // if API response does not contain error message, but there is some other error
-        throw new Error(`doFetch failed with status ${response.statusText}`);
-    } else {
-        // if all goes well
-        if (json.message != undefined && json.message == "success") {
+    if (!response.ok) // Status not between 200-299
+    {
+        console.log(json)
+        onDone(json)
+        return json;
+    }
+    else {
+        if (json.error == undefined) {
             await AsyncStorage.setItem("userToken", json.data.token);
             await AsyncStorage.setItem("username", username)
             await AsyncStorage.setItem("password", password)
             onDone(json.data.token)
             return json.data.token
         } else {
-            onDone(undefined)
-            return undefined
+            onDone(json)
+            return json
         }
     }
 }
 
-/* const logout = () => {
-    token = ""
-    lastUsername = undefined
-    lastPassword = undefined
-} */
+const tryParseResponseJson = async (response) => {
+    try {
+        const json = await response.json();
 
-//const loggedIn = () => token.length > 0 && lastUsername != undefined && lastPassword != undefined
+        if (json == undefined) return { error: response.statusText != undefined ? response.statusText : `Undefined error with status ${response.status}`, ok: response.ok, status: response.status }
+        else if (json.error != undefined) return { error: json.error, ok: response.ok, status: response.status }
+        else return json
 
-
+    } catch (err) {
+        return { error: response.statusText != undefined ? (response.statusText != "" ? response.statusText : "Network error with status " + response.status) : err.toString(), ok: response.ok, status: response.status }
+    }
+}
 
 export default { login }

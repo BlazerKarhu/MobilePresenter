@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import { convertIp } from '../utils/debug';
 import { MainContext } from '../contexts/MainContext';
 import { deletePost } from '../database/posts'
-import media from '../database/media';
+import { isVisible } from '../utils/visible';
+
+import Dialog from './modals/DialogModal';
 
 // const doDelete = async () => {
 // const resp = await deletePost(postId)
@@ -21,42 +23,56 @@ import media from '../database/media';
 
 
 const Single = ({ route, navigation }) => {
-  const { html, postId } = route.params;
+  const [errorDialog, setErrorDialog] = useState('');
+  const { html, postId, refresh } = route.params;
   console.log(convertIp(html))
+
+  const visible = isVisible()
   const { isLoggedIn, update, setUpdate } = useContext(MainContext);
 
   const doDelete = async () => {
-    const resp = await deletePost(postId)
-    setUpdate(!update);
-    navigation.goBack(null)
+    if (refresh != undefined) {
+      const resp = await deletePost(postId)
+
+      if (resp.error == undefined) {
+        refresh()
+      }
+      else
+      {
+        setErrorDialog(resp.error)
+      }
+    }
   }
 
-  {
-    isLoggedIn &&
-    React.useLayoutEffect(() => {
-      navigation.setOptions({
-        headerRight: () => (
-          <View style={{ margin: 10 }}>
-            <Button
-              color="#FF0000"
-              onPress={() => doDelete()}
-              title="Delete post" />
-          </View>
-        ),
-      });
-    }, [navigation]);
-  }
 
+  React.useLayoutEffect(() => {
+    if (!visible || !isLoggedIn) return;
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ margin: 10 }}>
+          <Button
+            color="#FF0000"
+            onPress={() => doDelete()}
+            title="Delete post" />
+        </View>
+      ),
+    });
+  }, [navigation]);
+
+
+
+  // Do not render anything if post deleted or navigated in some other way.
+  if (!visible) return null
 
   return (
-
-    <WebView
-      style={styles.container}
-      nestedScrollEnabled
-      originWhitelist={['*']}
-      source={{
-        html:
-          `<html>
+    <>
+      <WebView
+        style={styles.container}
+        nestedScrollEnabled
+        originWhitelist={['*']}
+        source={{
+          html:
+            `<html>
             <head>
               <meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
               <style>
@@ -73,7 +89,13 @@ const Single = ({ route, navigation }) => {
               </div>
             </body>
           </html>` }}
-    />
+      />
+      <Dialog
+        visible={errorDialog != ''}
+        text={errorDialog} buttons={["Ok"]}
+        onDone={() => { setErrorDialog('') }}>
+      </Dialog>
+    </>
   );
 };
 

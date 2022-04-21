@@ -18,12 +18,19 @@ export const uploadPost = async (title, image, html, onDone = () => { }) => {
     onDone(result)
     return result
 }
-const getPosts = async (tags=[], onDone=()=>{} ) => {
+const getPosts = async (tags=[], limit = undefined, onDone=()=>{} ) => {
     console.log('tags array',tags)
     if (tags.length>0) {
-        const result = await doFetch('api/posts?' + new URLSearchParams({
+
+        var params = new URLSearchParams({
             tags: tags,
-        }),
+        })
+
+        if(limit != undefined) params.append("limit",limit)
+
+        console.log(params.toString())
+
+        const result = await doFetch('api/posts?' + params.toString(),
             {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },

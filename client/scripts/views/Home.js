@@ -14,32 +14,38 @@ import postDb from '../database/posts'
 const Home = (props) => {
   const { navigation } = props;
   const [loginForm, setLoginForm] = useState(false);
-  const { isLoggedIn, setIsLoggedIn } = useContext(MainContext);
-  const { update } = useContext(MainContext);
+  const { isLoggedIn, setIsLoggedIn, update, setUpdate } = useContext(MainContext);
 
   const [posts, setPosts] = useState([]);
   const [carouselPosts, setCarouselPosts] = useState([]);
   useEffect(async () => {
     console.log("Update")
-    postDb.getPosts(['important'], (posts) => {
-      if (posts.data != undefined) {
+    postDb.getPosts(['important'], 3, (posts) => {
+      if (posts != undefined && posts.data != undefined) {
         setCarouselPosts(posts.data)
       }
     })
-    postDb.getPosts([], (posts) => {
-      if (posts.data != undefined) {
+    postDb.getPosts([], undefined, (posts) => {
+      if (posts != undefined && posts.data != undefined) {
         setPosts(posts.data)
       }
     })
   }, [update])
 
-  const carousel = <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} posts={carouselPosts.slice(0, 4)} />
+  const refresh = () => {
+    console.log("Refresh")
+    setUpdate(!update)
+    navigation.replace("Home")
+  }
+  
+
+  const carousel = <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
 
 
   return (
     <SafeAreaProvider>
 
-      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} posts={posts} />
+      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={posts} />
 
       <View style={styles.buttonView}>
 
@@ -61,7 +67,7 @@ const Home = (props) => {
 
 
 
-      {isLoggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name)} />}
+      {isLoggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name, {refresh: refresh})} />}
 
       <LoginModal
         visible={loginForm}

@@ -12,7 +12,7 @@ import Dialog from './modals/DialogModal';
 import { convertIp, revertIp } from '../utils/debug';
 import { StatusBar } from 'expo-status-bar';
 
-const Post = ({ navigation }) => {
+const Post = ({ navigation, route }) => {
   const [layout, setLayout] = useState({
     width: 0,
     height: 0,
@@ -156,7 +156,11 @@ const Post = ({ navigation }) => {
               textColor="white"
               fontSize={20}
               style={{margin: 10}}
-              onPress={() => setPublishSelectorState(true)}
+              onPress={() => { 
+                if(html.length == 0)
+                  setPopupDialogContent({text: "Cannot publish empty content"})
+                else setPublishSelectorState(true)
+              }}
             />)),
           }}
         />
@@ -195,11 +199,11 @@ const Post = ({ navigation }) => {
       </KeyboardAvoidingView>
 
       <PreviewModal visible={publishSelectorState} html={revertIp(html)} transparent={true} onDone={(postSuccess) => {
-        setPublishSelectorState(false); if (postSuccess == true) navigation.goBack(null)
+        setPublishSelectorState(false); if (postSuccess == true)  route.params?.refresh()
       }} />
       <Dialog
         visible={popupDialogContent.text != ""}
-        text={popupDialogContent.text} buttons={["Cancel", "Yes"]}
+        text={popupDialogContent.text} buttons={html.length != 0 ? ["Cancel", "Yes"] : ["Ok"]}
         onDone={(button) => { if (button == "Yes") popupDialogContent.onProceed(); setPopupDialogContent({ text: "", onProceed: () => { } }) }}>
       </Dialog>
 

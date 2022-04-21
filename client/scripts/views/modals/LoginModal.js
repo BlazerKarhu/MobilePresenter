@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { Modal, StyleSheet, Text, Alert, View, TouchableWithoutFeedback, TextInput } from 'react-native';
+import { Modal, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import CircleButton from '../../components/circleButton';
 import auth from '../../database/auth';
 import { MainContext } from '../../contexts/MainContext';
+
+import Dialog from './DialogModal';
 
 const picker = (props) => {
     const { actions, active, visible, onPressItem, onDone, onClose } = props;
@@ -12,28 +14,25 @@ const picker = (props) => {
     const [passwordInput, setPasswordInput] = useState('')
     const { isLoggedIn, setIsLoggedIn } = useContext(MainContext);
 
+    const [errorDialog, setErrorDialog] = useState('');
+
 
     const doLogin = async () => {
         if (isLoggedIn) {
             onDone()
         } else {
-            try {
                 const username = accountInput;
                 const password = passwordInput;
                 await auth.login(username, password, (
-                    async (token) => {
-                        console.log("auth login token ", token)
-                        const usertoken = token
-                        console.log('login ok, userToken:', usertoken);
-                        if (token != undefined) {
+                    async (resp) => {
+                        console.log("resp:"+ resp)
+                        if (resp.error == undefined) {
                             setIsLoggedIn(true);
                             onDone()
                         }
+                        else setErrorDialog(resp.error)
                     }));
-            } catch (error) {
-                console.log('Login error', error.message);
-                Alert.alert('Login error', error.message);
-            }
+                    
         }
 
     }
@@ -81,6 +80,11 @@ const picker = (props) => {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
+            <Dialog
+                visible={errorDialog != ''}
+                text={errorDialog} buttons={["Ok"]}
+                onDone={() => { setErrorDialog('') }}>
+            </Dialog>
         </View>
     )
 }

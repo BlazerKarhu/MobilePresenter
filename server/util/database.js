@@ -15,7 +15,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             postId INTEGER PRIMARY KEY AUTOINCREMENT,
             title text, 
             image text,
-            html text
+            html text,
+            date datetime DEFAULT(DateTime())
             )`,
             (err) => {
                 if (err) {
@@ -40,8 +41,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                     else{
                         // Table just created, creating some rows
                     var insert = 'INSERT INTO tags (postId, tag) VALUES (?,?)'
-                    db.run(insert, [1, "Important"])
-                    db.run(insert, [1, "Public"])
+                    db.run(insert, [1, "important"])
+                    db.run(insert, [1, "public"])
                     }
                 });
     }

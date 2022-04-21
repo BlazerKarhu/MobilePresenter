@@ -7,13 +7,13 @@ const router = express.Router()
 // Administrative login
 router.post("/", (req, res, next) => {
     var errors=[]
-    if (!req.body.password){
-        errors.push("No password specified");
-    }
     if (!req.body.username){
         errors.push("No username specified");
     }
-    if(req.body.password != password || req.body.username != username){
+    else if (!req.body.password){
+        errors.push("No password specified");
+    }
+    else if(req.body.password != password || req.body.username != username){
         errors.push("Unauthorized");
     }
     if (errors.length){

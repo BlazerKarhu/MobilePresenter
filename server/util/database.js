@@ -30,21 +30,39 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
 
             db.run(`CREATE TABLE tags (
                 tagsId INTEGER PRIMARY KEY AUTOINCREMENT,
-                postId int, 
-                tag text, 
-                FOREIGN KEY(postId) REFERENCES posts(postId)
+                tag text
                 )`,
                 (err) => {
                     if (err) {
                         // Table already created
-                    }
-                    else{
+                    }else{
                         // Table just created, creating some rows
-                    var insert = 'INSERT INTO tags (postId, tag) VALUES (?,?)'
-                    db.run(insert, [1, "important"])
-                    db.run(insert, [1, "public"])
+                        var insert = 'INSERT INTO tags (tag) VALUES (?)'
+                        db.run(insert, ["important"])
+                        db.run(insert, ["news"])
+                        db.run(insert, ["announcement"])
                     }
-                });
+                }
+                );
+
+            db.run(`CREATE TABLE postsTags (
+                postId INTEGER,
+                tagsId INTEGER,
+                PRIMARY KEY(postId, tagsId)
+                )`,
+                (err) => {
+                    if (err) {
+                        // Table already created
+                    }else{
+                        // Table just created, creating some rows
+                        var insert = 'INSERT INTO postsTags (postId, tagsId) VALUES (?,?)'
+                        db.run(insert, [1,1])
+                        db.run(insert, [1,2])
+                        db.run(insert, [1,3])
+                    }
+                }
+                );
+                
     }
 });
 

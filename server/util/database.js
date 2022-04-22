@@ -55,13 +55,14 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                         // Table already created
                     }else{
                         // Table just created, creating some rows
-                        var insert = 'INSERT INTO postsTags (postId, tagsId)) VALUES (?,?)'
+                        var insert = 'INSERT INTO postsTags (postId, tagsId) VALUES (?,?)'
                         db.run(insert, [1,1])
                         db.run(insert, [1,2])
                         db.run(insert, [1,2])
                     }
                 }
                 );
+                
     }
 });
 

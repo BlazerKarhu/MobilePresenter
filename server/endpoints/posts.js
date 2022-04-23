@@ -29,41 +29,19 @@ router.get("/", (req, res, next) => {
             })
         });
     } else {
-        //testing purposes
-        /* `SELECT * from posts
-        LEFT JOIN tags ON posts.postId = tags.postId
-        WHERE NOT EXISTS
-        (SELECT tags.tag NOT IN ('important')
-            LEFT JOIN tags ON posts.postId = tags.postId
-            WHERE posts.postId = tags.postId
-            ) 
-        GROUP BY posts.postId
-        ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}` */
-
-        //Testing purposes
-        /* `SELECT * from posts 
-        LEFT JOIN tags ON posts.postId = tags.postId 
-        WHERE tags.tag NOT IN () 
-        GROUP BY posts.postId" + req.query.limit != null ? " limit " + req.query.limit : "` */
-
-        //Working unfiltered
-        /* `SELECT * from posts
-        GROUP BY posts.postId
-        ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}` */
-
         var sql = `
-            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.html, posts.image
+            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.image, posts.html
             FROM posts 
             INNER JOIN postsTags ON posts.postId = postsTags.postId
             INNER JOIN tags ON tags.tagsid = postsTags.tagsid
             WHERE NOT EXISTS 
-                (SELECT tags.tagsid = 1
-                FROM postsTags
-                WHERE postsTags.postid = posts.postId
-                AND postsTags.tagsid = 1
+            (SELECT tags.tagsid
+                from postsTags
+                INNER JOIN tags on tags.tagsId = postsTags.tagsid
+                where postsTags.postid = posts.postId
+                and tags.tag IN ('important')
                 ) group by posts.postId
-                ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}
-        ; `
+            ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""};`
         var params = []
         db.all(sql, params, (err, rows) => {
             if (err) {

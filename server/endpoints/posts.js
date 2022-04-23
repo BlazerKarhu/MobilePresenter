@@ -24,6 +24,7 @@ router.get("/", (req, res, next) => {
     {
         errors.push("Insufficient includes for tags given");
         res.status(400).json({ "error": errors.join(",") });
+        return;
     }
 
     

@@ -32,7 +32,7 @@ router.get("/", (req, res, next) => {
         (SELECT * FROM
             (SELECT postId, GROUP_CONCAT(tag) AS tags FROM postsTags INNER JOIN tags ON postsTags.tagsid = tags.tagsid GROUP BY postid)
         WHERE ${tags})
-    as groupedtags INNER JOIN posts ON posts.postId = groupedtags.postId ORDER BY posts.date ${limit != undefined ? "LIMIT " + limit : ""}`
+    as groupedtags INNER JOIN posts ON posts.postId = groupedtags.postId ORDER BY posts.date DESC ${limit != undefined ? "LIMIT " + limit : ""}`
 
     var params = []
     db.all(sql, params, (err, rows) => {

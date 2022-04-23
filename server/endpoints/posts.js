@@ -5,55 +5,46 @@ const router = express.Router()
 
 // Get posts
 router.get("/", (req, res, next) => {
+    var errors = []
+    if (!req.query.tags) {
+        errors.push("No Tags specified");
+    }
+    if (!req.query.include) {
+        errors.push("Inclusion or exclusion not specified");
+    }
+    if (errors.length) {
+        res.status(400).json({ "error": errors.join(",") });
+        return;
+    }
+    const include = req.query.include.toLowerCase() == 'true'
+
+    var tags = req.query.tags.split(',').map(e => ` tags ${!include ? "NOT" : ""} LIKE '%${e}%' AND`).join("");
+    tags = tags.slice(0,tags.length - "AND".length)
+
     console.log("Tags:" + req.query.tags)
+    console.log(tags)
+
     const limit = Number.isInteger(parseInt(req.query.limit)) && parseInt(req.query.limit) >= 0 ? parseInt(req.query.limit) : undefined;
     // REMEMBER: All api inputs must be vetted. 
 
-    if (req.query.tags == "important") {
-        var sql = `
-            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.image, posts.html
-            FROM posts 
-            INNER JOIN postsTags ON posts.postId = postsTags.postId
-            INNER JOIN tags ON tags.tagsid = postsTags.tagsid 
-            WHERE tags.tag = ('important')
-            ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}`
-        var params = []
-        db.all(sql, params, (err, rows) => {
-            if (err) {
-                res.status(400).json({ "error": err.message });
-                return;
-            }
-            res.json({
-                "message": "success",
-                "data": rows
-            })
-        });
-    } else {
-        var sql = `
-            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.image, posts.html
-            FROM posts 
-            INNER JOIN postsTags ON posts.postId = postsTags.postId
-            INNER JOIN tags ON tags.tagsid = postsTags.tagsid
-            WHERE NOT EXISTS 
-            (SELECT tags.tagsid
-                from postsTags
-                INNER JOIN tags on tags.tagsId = postsTags.tagsid
-                where postsTags.postid = posts.postId
-                and tags.tag IN ('important')
-                ) group by posts.postId
-            ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""};`
-        var params = []
-        db.all(sql, params, (err, rows) => {
-            if (err) {
-                res.status(400).json({ "error": err.message });
-                return;
-            }
-            res.json({
-                "message": "success",
-                "data": rows
-            })
-        });
-    }
+    var sql = `
+    SELECT * FROM
+        (SELECT * FROM
+            (SELECT postId, GROUP_CONCAT(tag) AS tags FROM postsTags INNER JOIN tags ON postsTags.tagsid = tags.tagsid GROUP BY postid)
+        WHERE ${tags})
+    as groupedtags INNER JOIN posts ON posts.postId = groupedtags.postId ORDER BY posts.date ${limit != undefined ? "LIMIT " + limit : ""}`
+
+    var params = []
+    db.all(sql, params, (err, rows) => {
+        if (err) {
+            res.status(400).json({ "error": err.message });
+            return;
+        }
+        res.json({
+            "message": "success",
+            "data": rows
+        })
+    });
 });
 
 // Add post

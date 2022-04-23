@@ -18,12 +18,13 @@ export const uploadPost = async (title, image, html, onDone = () => { }) => {
     onDone(result)
     return result
 }
-const getPosts = async (tags=[], limit = undefined, onDone=()=>{} ) => {
+const getPosts = async (tags=[], include = true, limit = undefined, onDone=()=>{} ) => {
     console.log('tags array',tags)
     if (tags.length>0) {
 
         var params = new URLSearchParams({
             tags: tags,
+            include: include
         })
 
         if(limit != undefined) params.append("limit",limit)

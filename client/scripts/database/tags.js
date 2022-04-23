@@ -37,21 +37,41 @@ export const connectTagsToPosts = async (postId, tagId, onDone = () => { }) => {
     onDone(result)
     return result
 }
-export const getTags = async (onDone = () => { }) => {
+export const getTags = async (tag = undefined, onDone = () => { }) => {
+    if (tag != undefined) {
 
-    const result = await doFetch('api/tags',
-        {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        });
+        var params = new URLSearchParams({
+            tag: tag,
+        })
+        const result = await doFetch('api/tags', + params.toString(),
+            {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            });
 
-    if (result.message != undefined && result.message == "success") {
-        onDone(result)
-        return result
+        if (result.message != undefined && result.message == "success") {
+            onDone(result)
+            return result
+        } else {
+            onDone(undefined)
+            return undefined
+        }
     } else {
-        onDone(undefined)
-        return undefined
+        const result = await doFetch('api/tags',
+            {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            });
+
+        if (result.message != undefined && result.message == "success") {
+            onDone(result)
+            return result
+        } else {
+            onDone(undefined)
+            return undefined
+        }
     }
+
 }
 
 

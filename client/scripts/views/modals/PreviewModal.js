@@ -28,7 +28,7 @@ const picker = (props) => {
     const [image, setImage] = useState(undefined)
     const [title, setTitle] = useState('')
 
-    const [tagsArray, setTagsArray] = useState(['important','news', 'announcement']);
+    const [tagsArray, setTagsArray] = useState([]);
     const [selected, setSelected] = useState([]);
 
     const [errorDialog, setErrorDialog] = useState('');
@@ -41,16 +41,14 @@ const picker = (props) => {
     }
 
     // Fetch tags list WIP
-    /* useEffect(async () => {
-        getTags((tags) => {
+    useEffect(async () => {
+        getTags(undefined, (tags) => {
             if (tags != undefined && tags.data != undefined) {
-                for (let i = 0; i < tags.data.length; i++) {
-                console.log('Current tag:', tags.data[i].tag)
-                setTagsArray(tags => [...tags, tags.data[i].tag])
-                }
+                console.log(tags.data)
+                setTagsArray(tags.data.map((e) => e.tag))
             }
         })
-    }, []) */
+    }, [])
 
     const doPost = async () => {
         console.log('doPost title:', title)

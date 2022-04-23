@@ -11,7 +11,7 @@ router.get("/", (req, res, next) => {
 
     if (req.query.tags == "important") {
         var sql = `
-            SELECT posts.postId, posts.title, tags.tag, tags.tagsid
+            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.image, posts.html
             FROM posts 
             INNER JOIN postsTags ON posts.postId = postsTags.postId
             INNER JOIN tags ON tags.tagsid = postsTags.tagsid 
@@ -46,10 +46,24 @@ router.get("/", (req, res, next) => {
         WHERE tags.tag NOT IN () 
         GROUP BY posts.postId" + req.query.limit != null ? " limit " + req.query.limit : "` */
 
-        var sql = (`SELECT * from posts
+        //Working unfiltered
+        /* `SELECT * from posts
         GROUP BY posts.postId
-        ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}`)
-        console.log(sql);
+        ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}` */
+
+        var sql = `
+            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.html, posts.image
+            FROM posts 
+            INNER JOIN postsTags ON posts.postId = postsTags.postId
+            INNER JOIN tags ON tags.tagsid = postsTags.tagsid
+            WHERE NOT EXISTS 
+                (SELECT tags.tagsid = 1
+                FROM postsTags
+                WHERE postsTags.postid = posts.postId
+                AND postsTags.tagsid = 1
+                ) group by posts.postId
+                ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}
+        ; `
         var params = []
         db.all(sql, params, (err, rows) => {
             if (err) {

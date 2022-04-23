@@ -6,20 +6,32 @@ const router = express.Router()
 // Get posts
 router.get("/", (req, res, next) => {
     var errors = []
-    if (!req.query.include) {
-        errors.push("Inclusion or exclusion not specified");
+    if (req.query.include == undefined ) {
+        errors.push("Includes not defined");
+    }
+    else if (req.query.tags == undefined ) {
+        errors.push("Tags not defined");
     }
     if (errors.length) {
         res.status(400).json({ "error": errors.join(",") });
         return;
     }
-    const include = req.query.include.toLowerCase() == 'true'
 
-    var tags = req.query.tags?.split(',').map(e => ` tags ${!include ? "NOT" : ""} LIKE '%${e}%' AND`).join("");
-    tags = tags?.slice(0,tags.length - "AND".length)
+    const includes = req.query.include?.toLowerCase().split(',').map((inc) => inc == 'true');
+    const tags = req.query.tags?.split(',');
 
-    console.log("Tags:" + req.query.tags)
-    console.log(tags)
+    if(includes.length != tags.length)
+    {
+        errors.push("Insufficient includes for tags given");
+        res.status(400).json({ "error": errors.join(",") });
+    }
+
+    
+
+    var tagsSql = tags.map((e,i) => ` tags ${!includes[i] ? "NOT" : ""} LIKE '%${e}%' AND`).join("");
+    tagsSql = tagsSql?.slice(0,tagsSql.length - "AND".length)
+
+    console.log(` tags${!includes[1] ? " NOT" : ""} LIKE '%${tags[1]}%' AND`)
 
     const limit = Number.isInteger(parseInt(req.query.limit)) && parseInt(req.query.limit) >= 0 ? parseInt(req.query.limit) : undefined;
     // REMEMBER: All api inputs must be vetted. 
@@ -28,7 +40,7 @@ router.get("/", (req, res, next) => {
     SELECT * FROM
         (SELECT * FROM
             (SELECT postId, GROUP_CONCAT(tag) AS tags FROM postsTags INNER JOIN tags ON postsTags.tagsid = tags.tagsid GROUP BY postid)
-         ${tags != undefined ? "WHERE " + tags : "" })
+         ${tags != undefined ? "WHERE " + tagsSql : "" })
     as groupedtags INNER JOIN posts ON posts.postId = groupedtags.postId ORDER BY posts.date DESC ${limit != undefined ? "LIMIT " + limit : ""}`
 
     var params = []

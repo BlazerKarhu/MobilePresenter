@@ -20,12 +20,12 @@ const Home = (props) => {
   const [carouselPosts, setCarouselPosts] = useState([]);
   useEffect(async () => {
     console.log("Update")
-    postDb.getPosts(['important'], true, 3, (posts) => {
+    postDb.getPosts(['important'], [true], 3, (posts) => {
       if (posts != undefined && posts.data != undefined) {
         setCarouselPosts(posts.data)
       }
     })
-    postDb.getPosts(['important'], false, undefined, (posts) => {
+    postDb.getPosts(['important'], [false], undefined, (posts) => {
       if (posts != undefined && posts.data != undefined) {
         setPosts(posts.data)
       }

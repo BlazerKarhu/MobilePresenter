@@ -6,9 +6,6 @@ const router = express.Router()
 // Get posts
 router.get("/", (req, res, next) => {
     var errors = []
-    if (!req.query.tags) {
-        errors.push("No Tags specified");
-    }
     if (!req.query.include) {
         errors.push("Inclusion or exclusion not specified");
     }
@@ -18,8 +15,8 @@ router.get("/", (req, res, next) => {
     }
     const include = req.query.include.toLowerCase() == 'true'
 
-    var tags = req.query.tags.split(',').map(e => ` tags ${!include ? "NOT" : ""} LIKE '%${e}%' AND`).join("");
-    tags = tags.slice(0,tags.length - "AND".length)
+    var tags = req.query.tags?.split(',').map(e => ` tags ${!include ? "NOT" : ""} LIKE '%${e}%' AND`).join("");
+    tags = tags?.slice(0,tags.length - "AND".length)
 
     console.log("Tags:" + req.query.tags)
     console.log(tags)
@@ -31,7 +28,7 @@ router.get("/", (req, res, next) => {
     SELECT * FROM
         (SELECT * FROM
             (SELECT postId, GROUP_CONCAT(tag) AS tags FROM postsTags INNER JOIN tags ON postsTags.tagsid = tags.tagsid GROUP BY postid)
-        WHERE ${tags})
+         ${tags != undefined ? "WHERE " + tags : "" })
     as groupedtags INNER JOIN posts ON posts.postId = groupedtags.postId ORDER BY posts.date DESC ${limit != undefined ? "LIMIT " + limit : ""}`
 
     var params = []

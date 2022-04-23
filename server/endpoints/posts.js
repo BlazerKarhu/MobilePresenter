@@ -10,7 +10,13 @@ router.get("/", (req, res, next) => {
     // REMEMBER: All api inputs must be vetted. 
 
     if (req.query.tags == "important") {
-        var sql = `select * from posts LEFT JOIN tags ON posts.postId = tags.postId WHERE tags.tag IN ('important') order by posts.date desc ${limit ? `limit ${limit}` : ""}`
+        var sql = `
+            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.image, posts.html
+            FROM posts 
+            INNER JOIN postsTags ON posts.postId = postsTags.postId
+            INNER JOIN tags ON tags.tagsid = postsTags.tagsid 
+            WHERE tags.tag = ('important')
+            ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}`
         var params = []
         db.all(sql, params, (err, rows) => {
             if (err) {
@@ -23,9 +29,41 @@ router.get("/", (req, res, next) => {
             })
         });
     } else {
-        //"select * from posts LEFT JOIN tags ON posts.postId = tags.postId WHERE tags.tag NOT IN () GROUP BY posts.postId" + req.query.limit != null ? " limit " + req.query.limit : ""
-        var sql = (`select * from posts order by posts.date desc ${limit ? `limit ${limit}` : ""}`)
-        console.log(sql);
+        //testing purposes
+        /* `SELECT * from posts
+        LEFT JOIN tags ON posts.postId = tags.postId
+        WHERE NOT EXISTS
+        (SELECT tags.tag NOT IN ('important')
+            LEFT JOIN tags ON posts.postId = tags.postId
+            WHERE posts.postId = tags.postId
+            ) 
+        GROUP BY posts.postId
+        ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}` */
+
+        //Testing purposes
+        /* `SELECT * from posts 
+        LEFT JOIN tags ON posts.postId = tags.postId 
+        WHERE tags.tag NOT IN () 
+        GROUP BY posts.postId" + req.query.limit != null ? " limit " + req.query.limit : "` */
+
+        //Working unfiltered
+        /* `SELECT * from posts
+        GROUP BY posts.postId
+        ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}` */
+
+        var sql = `
+            SELECT posts.postId, posts.title, tags.tag, tags.tagsid, posts.html, posts.image
+            FROM posts 
+            INNER JOIN postsTags ON posts.postId = postsTags.postId
+            INNER JOIN tags ON tags.tagsid = postsTags.tagsid
+            WHERE NOT EXISTS 
+                (SELECT tags.tagsid = 1
+                FROM postsTags
+                WHERE postsTags.postid = posts.postId
+                AND postsTags.tagsid = 1
+                ) group by posts.postId
+                ORDER BY posts.date desc ${limit ? `limit ${limit}` : ""}
+        ; `
         var params = []
         db.all(sql, params, (err, rows) => {
             if (err) {
@@ -84,8 +122,8 @@ router.delete("/", (req, res, next) => {
         'DELETE FROM posts WHERE postId = ?',
         req.body.postId,
         function (err, result) {
-            if (err){
-                res.status(400).json({"error": res.message})
+            if (err) {
+                res.status(400).json({ "error": res.message })
                 return;
             }
 
@@ -94,7 +132,7 @@ router.delete("/", (req, res, next) => {
                 "data": {},
                 "changes": this.changes
             })
-    });
+        });
 })
 
 module.exports = router

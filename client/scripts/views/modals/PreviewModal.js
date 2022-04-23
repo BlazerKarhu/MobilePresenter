@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Modal, StyleSheet, Text, View, TouchableWithoutFeedback, } from 'react-native';
 import PropTypes from 'prop-types';
 import ExpandingTextInput from '../../components/expandingTextInput';
@@ -6,7 +6,7 @@ import CircleButton from '../../components/circleButton';
 import selectMedia from '../../utils/select';
 import media from '../../database/media';
 import { uploadPost } from '../../database/posts'
-import { uploadTags } from '../../database/tags';
+import { uploadTags, connectTagsToPosts, getTags } from '../../database/tags';
 import Dialog from '../modals/DialogModal';
 import { MainContext } from '../../contexts/MainContext';
 import { isVisible } from '../../utils/visible';
@@ -28,7 +28,7 @@ const picker = (props) => {
     const [image, setImage] = useState(undefined)
     const [title, setTitle] = useState('')
 
-    const [tags, setTags] = useState(["important", "notimportant", "news", "announcements"]);
+    const [tagsArray, setTagsArray] = useState([]);
     const [selected, setSelected] = useState([]);
 
     const [errorDialog, setErrorDialog] = useState('');
@@ -40,6 +40,16 @@ const picker = (props) => {
         setSelected([])
     }
 
+    // Fetch tags list WIP
+    useEffect(async () => {
+        getTags(undefined, (tags) => {
+            if (tags != undefined && tags.data != undefined) {
+                console.log(tags.data)
+                setTagsArray(tags.data.map((e) => e.tag))
+            }
+        })
+    }, [])
+
     const doPost = async () => {
         console.log('doPost title:', title)
         console.log('doPost html:', html)
@@ -50,13 +60,15 @@ const picker = (props) => {
             if (imagePath.error == undefined) {
                 console.log('Number of tags selected:', selected.length)
                 const resp = await uploadPost(title, imagePath, html)
-                console.log('PostId',resp.id)
+                console.log('PostId', resp.id)
                 if (resp.error == undefined) {
                     //if tags selected for post, add them into the post
                     if (selected.length != undefined) {
                         for (let i = 0; i < selected.length; i++) {
                             console.log(selected[i])
-                            const tagresp = await uploadTags(resp.id, selected[i])
+                            const tagresp = await uploadTags(selected[i])
+                            console.log('tag id:', tagresp.id)
+                            const connectResp = await connectTagsToPosts(resp.id, tagresp.id)
                         }
                     }
                     console.log('upload response', resp) // TODO: Add tags to resp.postId
@@ -104,23 +116,23 @@ const picker = (props) => {
 
                             </Card>
 
-                            <TagsDropdownPicker 
-                            tags={tags}
-                            selected={selected}
-                            onSelectedChange={(selected)=>{
-                                console.log("Clicked, selected now: "+selected)
-                                setSelected(selected);
-                            }} />
+                            <TagsDropdownPicker
+                                tags={tagsArray}
+                                selected={selected}
+                                onSelectedChange={(selected) => {
+                                    console.log("Clicked, selected now: " + selected)
+                                    setSelected(selected);
+                                }} />
 
                             <CircleButton text='➤'
-                                    size={35}
-                                    color="#2196f3"
-                                    textColor="white"
-                                    margin={10}
-                                    fontSize={20}
-                                    style={styles.modalContentEnd}
-                                    onPress={() => doPost()}
-                                />
+                                size={35}
+                                color="#2196f3"
+                                textColor="white"
+                                margin={10}
+                                fontSize={20}
+                                style={styles.modalContentEnd}
+                                onPress={() => doPost()}
+                            />
                             <Dialog
                                 visible={errorDialog != ''}
                                 text={errorDialog} buttons={["Ok"]}

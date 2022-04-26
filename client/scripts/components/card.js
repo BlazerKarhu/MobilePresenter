@@ -14,7 +14,8 @@ const Card = props => (
             >
                 {props.children}
                 {props.text != undefined &&
-                    <Text style={[{ color: props.textColor, fontSize: props.fontSize, textAlign: props.textAlign }, { margin: props.textPadding, fontWeight: props.fontWeight, textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: -1, height: 1 }, textShadowRadius: 10 }]}>
+                    <Text
+                        style={[{ color: props.textColor, fontSize: props.fontSize, textAlign: props.textAlign }, { margin: props.textPadding, fontWeight: props.fontWeight, textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: -1, height: 1 }, textShadowRadius: 10 }]}>
                         {props.text}
                     </Text>}
             </ImageBackground>

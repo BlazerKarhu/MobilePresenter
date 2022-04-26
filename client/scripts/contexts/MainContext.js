@@ -10,13 +10,15 @@ const MainProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState();
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(false);
+  const [tagsArray, setTagsArray] = useState([]);
+  const [selected, setSelected] = useState([]);
 
   useEffect(async () => {
     setIsLoggedIn(await hasSession())
   }, []);
 
   return (
-    <MainContext.Provider value={{ isLoggedIn, setIsLoggedIn, user, setUser, update, setUpdate }}>
+    <MainContext.Provider value={{ isLoggedIn, setIsLoggedIn, user, setUser, update, setUpdate, tagsArray, setTagsArray, selected, setSelected }}>
       {children}
     </MainContext.Provider>
   );

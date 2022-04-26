@@ -18,7 +18,7 @@ const picker = (props) => {
     const mounted = isVisible()
     const { visible, html: html, onDone } = props;
 
-    const { update, setUpdate } = useContext(MainContext);
+    const { update, setUpdate, tagsArray, selected, setSelected } = useContext(MainContext);
 
     const [layout, setLayout] = useState({
         width: 0,
@@ -27,9 +27,6 @@ const picker = (props) => {
 
     const [image, setImage] = useState(undefined)
     const [title, setTitle] = useState('')
-
-    const [tagsArray, setTagsArray] = useState([]);
-    const [selected, setSelected] = useState([]);
 
     const [errorDialog, setErrorDialog] = useState('');
 
@@ -40,19 +37,14 @@ const picker = (props) => {
         setSelected([])
     }
 
-    // Fetch tags list WIP
-    useEffect(async () => {
-        getTags(undefined, (tags) => {
-            if (tags != undefined && tags.data != undefined) {
-                console.log(tags.data)
-                setTagsArray(tags.data.map((e) => e.tag))
-            }
-        })
-    }, [])
-
     const doPost = async () => {
         console.log('doPost title:', title)
         console.log('doPost html:', html)
+
+        if (selected == undefined || selected.length == 0) {
+            setErrorDialog('Tags are required')
+            return;
+        }
 
         media.uploadMedia(image, async (imagePath) => {
             console.log('doPost image path:', imagePath)
@@ -164,7 +156,7 @@ const styles = StyleSheet.create({
         textAlign: 'center', fontSize: 32, padding: 10
     },
     thumbnailText: {
-        textAlign: 'center', fontSize: 16, padding: 10
+        textAlign: 'center', fontSize: 16, padding: 10, color: 'white', textShadowColor: 'rgba(0, 0, 0, 0.75)', fontWeight: "400", textShadowOffset: { width: -1, height: 1 }, textShadowRadius: 10
     },
     modalContentTop: { justifyContent: 'flex-start' },
     card: { width: '100%' },

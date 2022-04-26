@@ -19,6 +19,7 @@ const ExpandingTextInput = props => {
         <TextInput editable multiline
             {...props}
             ref={textInputRef}
+            maxLength={40}
             onChangeText={(txt)=>{onChange(txt)}}
             style={[styles.multiline, (Platform.OS === "web" && { outlineStyle: "none" }), props.style, { height: Math.max(lineHeight, textInput.height) + 1, lineHeight: lineHeight }]}
             onContentSizeChange={e => {

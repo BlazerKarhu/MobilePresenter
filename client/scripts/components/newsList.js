@@ -43,9 +43,21 @@ const NewsList = (props) => {
       keyExtractor={(_, index) => "l" + index}
       renderItem={({ item }) => {
         return (
-          <Card 
-          onPress={() => { navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh }); console.log(item.image) }}
-          style={[styles.newsItem, { width: itemWidth, elevation: 5 }]} text={item.title} image={item.image}/>
+          <Card
+            onPress={() => {
+              navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh });
+              console.log(item.image)
+            }}
+            style={[styles.newsItem, { width: itemWidth, elevation: 5 }]}
+            image={item.image}>
+            <Text
+              style={styles.title}
+              onPress={() => { navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh }) }}
+            >
+              {item.title}
+
+            </Text>
+          </Card>
         )
       }}
     />
@@ -58,6 +70,15 @@ const styles = StyleSheet.create({
   newsItem: {
     margin: margin
   },
+  title: {
+    textAlign: "left",
+    textColor: "white",
+    fontWeight: "400",
+    textPadding: 20,
+    fontSize: 30,
+    color: 'white',
+    margin: 20
+  }
 });
 
 export default NewsList

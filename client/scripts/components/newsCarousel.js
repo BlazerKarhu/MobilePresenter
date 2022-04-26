@@ -5,7 +5,7 @@ import { isMounted, isVisible } from '../utils/visible';
 import { convertIp } from '../utils/debug';
 import Card from './card';
 
-const newsCarousel = ({ navigation, refresh, posts, style}) => {
+const newsCarousel = ({ navigation, refresh, posts, style }) => {
   const visible = isVisible()
   const mounted = isMounted()
   const [layout, setLayout] = useState({
@@ -14,24 +14,24 @@ const newsCarousel = ({ navigation, refresh, posts, style}) => {
   });
 
   const [interval, setInterval] = React.useState(0);
-  const onIntervalChange = useRef((items) => { 
-    if(!visible || !mounted || items.viewableItems.length == 0) return;
+  const onIntervalChange = useRef((items) => {
+    if (!visible || !mounted || items.viewableItems.length == 0) return;
     setInterval(items.viewableItems[0].index)
   })
 
   const carouselRef = React.useRef()
 
-  if(!visible || !mounted) return null
+  if (!visible || !mounted) return null
 
   const bullets = (carouselRef, interval) => {
     return <FlatList
       horizontal
       data={posts}
       keyExtractor={(_, index) => "b" + index}
-      contentContainerStyle={{marginLeft: 'auto', marginRight: 'auto'}}
+      contentContainerStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
       renderItem={({ item, index }) =>
         <Text
-          onPress={() => carouselRef.current.scrollToIndex({ animated: true, index: index})}
+          onPress={() => carouselRef.current.scrollToIndex({ animated: true, index: index })}
           style={[styles.bulletstyle, { opacity: interval == index ? 0.6 : 0.42 }]}
         >•</Text>
       }></FlatList>
@@ -55,12 +55,17 @@ const newsCarousel = ({ navigation, refresh, posts, style}) => {
         renderItem={({ item }) => {
           return (
             <Card
-            onPress={() => navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh })}
-            style={{ width: layout.width, marginHorizontal: Platform.OS == 'web' ? 1 : undefined }}
-            contentContainerStyle={{width: "100%", maxHeight: 400, alignSelf:"center"}}
-            image={item.image}
-            text={item.title}
-            />
+              onPress={() => navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh })}
+              style={{ width: layout.width, marginHorizontal: Platform.OS == 'web' ? 1 : undefined }}
+              contentContainerStyle={{ width: "100%", maxHeight: 400, alignSelf: "center" }}
+              image={item.image}
+            >
+              <Text
+                style={styles.title}
+                onPress={() => { navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh }) }}>
+                {item.title}
+              </Text>
+            </Card>
           )
         }}
       />
@@ -77,6 +82,15 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'center',
   },
+  title: {
+    textAlign: "left",
+    textColor: "white",
+    fontWeight: "400",
+    textPadding: 20,
+    fontSize: 30,
+    color: 'white',
+    margin: 20
+  }
 });
 
 newsCarousel.propTypes = {

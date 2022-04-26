@@ -10,14 +10,22 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MainContext } from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import postDb from '../database/posts'
+import { getTags } from '../database/tags';
+import TagsDropdownPicker from '../components/tagsDropdownPicker';
 
 const Home = (props) => {
   const { navigation } = props;
   const [loginForm, setLoginForm] = useState(false);
-  const { isLoggedIn, setIsLoggedIn, update, setUpdate } = useContext(MainContext);
-
+  const { isLoggedIn, setIsLoggedIn, update, setUpdate, tagsArray, setTagsArray, selected, setSelected } = useContext(MainContext);
+  const [filterShow, setFilterShow] = useState(false)
   const [posts, setPosts] = useState([]);
   const [carouselPosts, setCarouselPosts] = useState([]);
+
+  const [selectedFilterTags, setSelectedFilterTags] = useState([])
+  let filterArray = ['important']
+  const [selectedTagsIncludesList, setSelectedTagsIncludesList] = useState([])
+  let filterIncludes = [false]
+
   useEffect(async () => {
     console.log("Update")
     postDb.getPosts(['important'], [true], 3, (posts) => {
@@ -25,9 +33,15 @@ const Home = (props) => {
         setCarouselPosts(posts.data)
       }
     })
-    postDb.getPosts(['important'], [false], undefined, (posts) => {
+    postDb.getPosts(['important'].concat(selectedFilterTags), [false].concat(selectedFilterTags.map(() => true)), undefined, (posts) => {
       if (posts != undefined && posts.data != undefined) {
         setPosts(posts.data)
+      }
+    })
+    getTags(undefined, (tags) => {
+      if (tags != undefined && tags.data != undefined) {
+        console.log(tags.data)
+        setTagsArray(tags.data.map((e) => e.tag))
       }
     })
   }, [update])
@@ -37,18 +51,57 @@ const Home = (props) => {
     setUpdate(!update)
     navigation.replace("Home")
   }
-  
+
+  const placeFiltersAndIncludes = () => {
+    for (let i = 0; i < selectedFilterTags.length; i++) {
+      filterIncludes.push(true)
+    }
+    console.log('selected tags lenght', selectedFilterTags.length)
+    filterArray = filterArray.concat(selectedFilterTags)
+    console.log('Includes list', filterIncludes)
+    console.log('Filter array', filterArray)
+    setFilterShow(!filterShow)
+    setUpdate(!update)
+  }
+
 
   const carousel = <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
-
+  console.log('Filter array', filterArray)
 
   return (
     <SafeAreaProvider>
-
-      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={posts} />
+      <View>
+        <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
+        <Button
+          title='Toggle filter selector'
+          onPress={() => {
+            setFilterShow(!filterShow)
+            setSelectedFilterTags([])
+            setSelectedTagsIncludesList([false])
+          }} />
+        <>
+          {filterShow == true ?
+            <>
+              <TagsDropdownPicker
+                tags={tagsArray.filter((e) => e != 'important')}
+                selected={selectedFilterTags}
+                onSelectedChange={(selected) => {
+                  setSelectedFilterTags(selected);
+                }} />
+              <Button
+                title='filter posts'
+                onPress={() => {
+                  placeFiltersAndIncludes()
+                }} />
+            </>
+            :
+            null
+          }
+        </>
+      </View>
+      <NewsList style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={posts} />
 
       <View style={styles.buttonView}>
-
         <Button
           title={isLoggedIn ? 'Logout' : 'Login'}
           onPress={async () => {
@@ -67,7 +120,7 @@ const Home = (props) => {
 
 
 
-      {isLoggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name, {refresh: refresh})} />}
+      {isLoggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name, { refresh: refresh })} />}
 
       <LoginModal
         visible={loginForm}

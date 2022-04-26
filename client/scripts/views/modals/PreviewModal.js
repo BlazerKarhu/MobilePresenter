@@ -98,7 +98,7 @@ const picker = (props) => {
                 <View style={styles.modalBackdrop} >
                     <TouchableWithoutFeedback onPress={() => { }}>
                         <View style={styles.modalContent} onLayout={(event) => setLayout(event.nativeEvent.layout)}>
-                            <Text style={styles.title}>Post Preview</Text>
+                            <Text style={styles.title}>Finalize Post</Text>
                             <Card
                                 onPress={() => selectMedia((media) => { setImage(media.uri) }, 'image', [2, 1])}
                                 image={image}
@@ -114,6 +114,10 @@ const picker = (props) => {
                                         setTitle(input);
                                     }} />
 
+                                <Text
+                                    onPress={() => selectMedia((media) => { setImage(media.uri) }, 'image', [2, 1])}
+                                    style={styles.thumbnailText}
+                                >{image == undefined ? 'Place a thumbnail here' : null} </Text>
                             </Card>
 
                             <TagsDropdownPicker
@@ -144,7 +148,6 @@ const picker = (props) => {
             </TouchableWithoutFeedback>
         </Modal>
     )
-
 }
 
 
@@ -159,6 +162,9 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'center', fontSize: 32, padding: 10
+    },
+    thumbnailText: {
+        textAlign: 'center', fontSize: 16, padding: 10
     },
     modalContentTop: { justifyContent: 'flex-start' },
     card: { width: '100%' },

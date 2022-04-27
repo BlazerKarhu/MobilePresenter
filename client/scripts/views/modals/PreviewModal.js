@@ -12,6 +12,7 @@ import { MainContext } from '../../contexts/MainContext';
 import { isVisible } from '../../utils/visible';
 import Card from '../../components/card';
 import TagsDropdownPicker from '../../components/tagsDropdownPicker';
+import TagsDropdownContainer from '../../components/tagsDropdownContainer';
 
 
 const picker = (props) => {
@@ -48,7 +49,7 @@ const picker = (props) => {
             return;
         }
 
-        if(posting) return;
+        if (posting) return;
         setPosting(true)
 
         media.uploadMedia(image, async (imagePath) => {
@@ -122,6 +123,12 @@ const picker = (props) => {
                             <TagsDropdownPicker
                                 tags={tagsArray}
                                 selected={selected}
+                                onSelectedChange={(selected) => {
+                                    console.log("Clicked, selected now: " + selected)
+                                    setSelected(selected);
+                                }} />
+
+                            <TagsDropdownContainer selected={selected}
                                 onSelectedChange={(selected) => {
                                     console.log("Clicked, selected now: " + selected)
                                     setSelected(selected);

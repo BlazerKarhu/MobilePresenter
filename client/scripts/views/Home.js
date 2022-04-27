@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import postDb from '../database/posts'
 import { getTags } from '../database/tags';
 import TagsDropdownPicker from '../components/tagsDropdownPicker';
+import TagsDropdownContainer from '../components/tagsDropdownContainer';
 
 const Home = (props) => {
   const { navigation } = props;
@@ -70,6 +71,10 @@ const Home = (props) => {
                 onSelectedChange={(selected) => {
                   setSelectedFilterTags(selected);
                 }} />
+                <TagsDropdownContainer selected={selectedFilterTags}
+                                onSelectedChange={(selected) => {
+                                  setSelectedFilterTags(selected);
+                                }} />
               <Button
                 title='filter posts'
                 onPress={() => {

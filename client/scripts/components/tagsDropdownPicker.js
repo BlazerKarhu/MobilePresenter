@@ -16,7 +16,6 @@ const TagsDropdownPicker = ({tags, selected, onSelectedChange}) => {
     })
 
     return (
-        <>
             <DropDownPicker
                 /*TODO: Load list and set this with state => loading={loading} */
                 // setValue={setValue}
@@ -58,24 +57,6 @@ const TagsDropdownPicker = ({tags, selected, onSelectedChange}) => {
                 selectedItemContainerStyle={{ /*behind each dropdown item */ }}
                 min={0}
             />
-            <ScrollView >
-
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', width: "100%" }}>
-                    {selected.map((tag) => (
-                        <CircleButton text={tag}
-                            color="#2196f3"
-                            key={tag}
-                            textColor="white"
-                            fontSize={20}
-                            style={{ borderRadius: 1, padding: 10, flexGrow: 1, borderWidth: 10, borderColor: 'white' }}
-                            onPress={() => onSelectedChange(selected.filter((t) => t != tag)) }
-                        />)
-                    )}
-                </View>
-
-            </ScrollView>
-            
-        </>
     )
 
 }

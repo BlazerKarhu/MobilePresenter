@@ -18,7 +18,9 @@ const picker = (props) => {
     const mounted = isVisible()
     const { visible, html: html, onDone } = props;
 
-    const { update, setUpdate, tagsArray, selected, setSelected } = useContext(MainContext);
+    const { update, setUpdate, tagsArray } = useContext(MainContext);
+
+    const [selected, setSelected] = useState([]);
 
     const [layout, setLayout] = useState({
         width: 0,

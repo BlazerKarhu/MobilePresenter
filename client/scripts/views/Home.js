@@ -15,16 +15,18 @@ import TagsDropdownPicker from '../components/tagsDropdownPicker';
 
 const Home = (props) => {
   const { navigation } = props;
+  const { isLoggedIn, setIsLoggedIn, update, setUpdate, tagsArray, setTagsArray } = useContext(MainContext);
+
+  // Popups
   const [loginForm, setLoginForm] = useState(false);
-  const { isLoggedIn, setIsLoggedIn, update, setUpdate, tagsArray, setTagsArray, selected, setSelected } = useContext(MainContext);
   const [filterShow, setFilterShow] = useState(false)
-  const [posts, setPosts] = useState([]);
+  
+  // Posts
+  const [listPosts, setListPosts] = useState([]);
   const [carouselPosts, setCarouselPosts] = useState([]);
 
+  // Tags
   const [selectedFilterTags, setSelectedFilterTags] = useState([])
-  let filterArray = ['important']
-  const [selectedTagsIncludesList, setSelectedTagsIncludesList] = useState([])
-  let filterIncludes = [false]
 
   useEffect(async () => {
     console.log("Update")
@@ -35,46 +37,29 @@ const Home = (props) => {
     })
     postDb.getPosts(['important'].concat(selectedFilterTags), [false].concat(selectedFilterTags.map(() => true)), undefined, (posts) => {
       if (posts != undefined && posts.data != undefined) {
-        setPosts(posts.data)
+        setListPosts(posts.data)
       }
     })
     getTags(undefined, (tags) => {
       if (tags != undefined && tags.data != undefined) {
-        console.log(tags.data)
         setTagsArray(tags.data.map((e) => e.tag))
       }
     })
   }, [update])
 
   const refresh = () => {
-    console.log("Refresh")
     setUpdate(!update)
     navigation.replace("Home")
   }
 
-  const placeFiltersAndIncludes = () => {
-    for (let i = 0; i < selectedFilterTags.length; i++) {
-      filterIncludes.push(true)
-    }
-    console.log('selected tags lenght', selectedFilterTags.length)
-    filterArray = filterArray.concat(selectedFilterTags)
-    console.log('Includes list', filterIncludes)
-    console.log('Filter array', filterArray)
-    setFilterShow(!filterShow)
-    setUpdate(!update)
-  }
-
-
   const carousel = 
   <>
-
   <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
   <Button
           title='Toggle filter selector'
           onPress={() => {
             setFilterShow(!filterShow)
             setSelectedFilterTags([])
-            setSelectedTagsIncludesList([false])
           }} />
         <>
           {filterShow == true ?
@@ -88,7 +73,8 @@ const Home = (props) => {
               <Button
                 title='filter posts'
                 onPress={() => {
-                  placeFiltersAndIncludes()
+                  setFilterShow(!filterShow)
+                  setUpdate(!update)
                 }} />
             </>
             :
@@ -96,18 +82,17 @@ const Home = (props) => {
           }
         </>
   </>
-  console.log('Filter array', filterArray)
 
   return (
     <SafeAreaProvider>
-      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={posts} />
+      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={listPosts} />
 
       <View style={styles.buttonView}>
         <Button
           title={isLoggedIn ? 'Logout' : 'Login'}
           onPress={async () => {
             if (isLoggedIn) {
-              console.log("removed user info")
+              console.log("Logout")
               await AsyncStorage.removeItem("userToken");
               await AsyncStorage.removeItem("username");
               await AsyncStorage.removeItem("password");

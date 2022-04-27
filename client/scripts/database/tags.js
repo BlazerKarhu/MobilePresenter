@@ -1,42 +1,22 @@
 import doFetch from '../utils/fetch'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const uploadTags = async (tag, onDone = () => { }) => {
+export const uploadTags = async (post, tag, onDone = () => { }) => {
     const userToken = await AsyncStorage.getItem("userToken")
 
     const result = await doFetch('api/tags',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': userToken },
-            body: JSON.stringify({ 'tag': tag })
+            body: JSON.stringify({ 'post': post, 'tag': tag })
         });
-    if (result.message != undefined && result.message == "success") {
-        onDone(result)
-        return result
-    }
+
+        console.log(result)
 
     onDone(result)
     return result
 }
 
-export const connectTagsToPosts = async (postId, tagId, onDone = () => { }) => {
-    const userToken = await AsyncStorage.getItem("userToken")
-
-    const result = await doFetch('api/postsTags',
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': userToken },
-            body: JSON.stringify({ 'postId': postId, 'tagId': tagId })
-        }
-    );
-    if (result.message != undefined && result.message == "success") {
-        onDone(result)
-        return result
-    }
-
-    onDone(result)
-    return result
-}
 export const getTags = async (tag = undefined, onDone = () => { }) => {
     if (tag != undefined) {
 
@@ -77,4 +57,4 @@ export const getTags = async (tag = undefined, onDone = () => { }) => {
 
 
 
-export default { uploadTags, connectTagsToPosts, getTags }
+export default { uploadTags, getTags }

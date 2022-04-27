@@ -6,7 +6,7 @@ import CircleButton from '../../components/circleButton';
 import selectMedia from '../../utils/select';
 import media from '../../database/media';
 import { uploadPost } from '../../database/posts'
-import { uploadTags, connectTagsToPosts, getTags } from '../../database/tags';
+import { uploadTags } from '../../database/tags';
 import Dialog from '../modals/DialogModal';
 import { MainContext } from '../../contexts/MainContext';
 import { isVisible } from '../../utils/visible';
@@ -60,16 +60,12 @@ const picker = (props) => {
                 const resp = await uploadPost(title, imagePath, html)
                 console.log('PostId', resp.id)
                 if (resp.error == undefined) {
-                    //if tags selected for post, add them into the post
-                    if (selected.length != undefined) {
-                        for (let i = 0; i < selected.length; i++) {
-                            console.log(selected[i])
-                            const tagresp = await uploadTags(selected[i])
-                            console.log('tag id:', tagresp.id)
-                            const connectResp = await connectTagsToPosts(resp.id, tagresp.id)
-                        }
-                    }
-                    console.log('upload response', resp) // TODO: Add tags to resp.postId
+                    //Add tags into the post
+                    for await (const tag of selected)
+                        await uploadTags(resp.id, tag)
+                    
+
+                    console.log('upload response', resp)
 
                     setUpdate(!update);
                     onExit(true);

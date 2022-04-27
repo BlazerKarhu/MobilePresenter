@@ -65,14 +65,11 @@ const Home = (props) => {
   }
 
 
-  const carousel = <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
-  console.log('Filter array', filterArray)
+  const carousel = 
+  <>
 
-  return (
-    <SafeAreaProvider>
-      <View>
-        <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
-        <Button
+  <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
+  <Button
           title='Toggle filter selector'
           onPress={() => {
             setFilterShow(!filterShow)
@@ -98,8 +95,12 @@ const Home = (props) => {
             null
           }
         </>
-      </View>
-      <NewsList style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={posts} />
+  </>
+  console.log('Filter array', filterArray)
+
+  return (
+    <SafeAreaProvider>
+      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={posts} />
 
       <View style={styles.buttonView}>
         <Button

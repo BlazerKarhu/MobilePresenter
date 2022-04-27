@@ -29,22 +29,25 @@ const picker = (props) => {
     const [title, setTitle] = useState('')
 
     const [errorDialog, setErrorDialog] = useState('');
+    const [posting, setPosting] = useState(false);
 
     const onExit = (postSuccess = false) => {
         onDone(postSuccess);
         setTitle('');
         setImage(undefined);
         setSelected([])
+        setPosting(false)
     }
 
     const doPost = async () => {
-        console.log('doPost title:', title)
-        console.log('doPost html:', html)
 
         if (selected == undefined || selected.length == 0) {
             setErrorDialog('Tags are required')
             return;
         }
+
+        if(posting) return;
+        setPosting(true)
 
         media.uploadMedia(image, async (imagePath) => {
             console.log('doPost image path:', imagePath)
@@ -70,9 +73,11 @@ const picker = (props) => {
                 }
                 else {
                     setErrorDialog(resp.error)
+                    setPosting(false)
                 }
             } else {
                 setErrorDialog(imagePath.error)
+                setPosting(false)
             }
         })
     }
@@ -150,7 +155,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, alignContent: 'center'
     },
     modalContent: {
-        backgroundColor: '#f8f8f8', margin: 'auto', alignItems: 'center', minWidth: '50%', maxWidth: '100%', maxHeight: '100%'
+        backgroundColor: 'white', margin: 'auto', alignItems: 'center', minWidth: '50%', maxWidth: '100%', maxHeight: '100%'
     },
     title: {
         textAlign: 'center', fontSize: 32, padding: 10

@@ -4,8 +4,6 @@ const router = express.Router()
 
 // Get tags
 router.get("/", (req, res, next) => {
-    const tag = req.query.tag
-    console.log("Tag:" + tag)
     var sql = ` SELECT * FROM tags`
     var params = []
     db.all(sql, params, (err, rows) => {
@@ -39,7 +37,6 @@ router.post("/", (req, res, next) => {
         post: req.body.post,
         tag: req.body.tag.toLowerCase(),
     }
-    console.log('data.tag:', data.tag)
 
     findTag(data.tag, (err, tag) => {
         if (err) {

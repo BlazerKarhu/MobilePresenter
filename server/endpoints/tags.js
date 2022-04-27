@@ -18,7 +18,6 @@ router.get("/", (req, res, next) => {
             "data": rows
         })
     });
-
 });
 
 // Add tag
@@ -33,7 +32,7 @@ router.post("/", (req, res, next) => {
         return;
     }
     var data = {
-        tag: req.body.tag,
+        tag: req.body.tag.toLowerCase(),
     }
     console.log('data.tag:', data.tag)
     var sql = ` SELECT tags.tagsId FROM tags WHERE tags.tag = '${data.tag}' LIMIT 1`

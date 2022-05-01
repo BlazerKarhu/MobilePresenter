@@ -32,8 +32,6 @@ router.get("/", (req, res, next) => {
     var tagsSql = tags.map((e,i) => ` tags ${!includes[i] ? "NOT" : ""} LIKE '%${e}%' AND`).join("");
     tagsSql = tagsSql?.slice(0,tagsSql.length - "AND".length)
 
-    console.log(` tags${!includes[1] ? " NOT" : ""} LIKE '%${tags[1]}%' AND`)
-
     const limit = Number.isInteger(parseInt(req.query.limit)) && parseInt(req.query.limit) >= 0 ? parseInt(req.query.limit) : undefined;
     // REMEMBER: All api inputs must be vetted. 
 

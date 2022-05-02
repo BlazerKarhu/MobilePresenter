@@ -27,6 +27,7 @@ const TagsDropdownPicker = ({tags, selected, onSelectedChange}) => {
                     const newSelected = s.map(t => t.value)
                     onSelectedChange(newSelected) }
                 }
+                listMode={"SCROLLVIEW"}
                 searchable={true}
                 multiple={true}
                 placeholder='Select tags'

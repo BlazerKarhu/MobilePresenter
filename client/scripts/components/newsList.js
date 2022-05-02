@@ -11,7 +11,7 @@ const margin = 20
 
 
 const NewsList = (props) => {
-  const { navigation, refresh, posts, style, contentContainerStyle } = props;
+  const { navigation, posts, style, contentContainerStyle } = props;
   const visible = isVisible(() => onAppear())
   const window = Dimensions.get('window'); // Used only for starting values to have one less redraw
   const [layout, setLayout] = useState({
@@ -45,14 +45,14 @@ const NewsList = (props) => {
         return (
           <Card
             onPress={() => {
-              navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh });
+              navigation.navigate('Detail', { html: item.html, postId: item.postId });
               console.log(item.image)
             }}
             style={[styles.newsItem, { width: itemWidth, elevation: 5 }]}
             image={item.image}>
             <Text
               style={styles.title}
-              onPress={() => { navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh }) }}
+              onPress={() => { navigation.navigate('Detail', { html: item.html, postId: item.postId }) }}
             >
               {item.title}
 

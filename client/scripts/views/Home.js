@@ -48,14 +48,9 @@ const Home = (props) => {
     })
   }, [update])
 
-  const refresh = () => {
-    setUpdate(!update)
-    navigation.replace("Home")
-  }
-
   const carousel = 
   <>
-  <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} refresh={refresh} posts={carouselPosts.slice(0, 4)} />
+  <NewsCarousel style={{ backgroundColor: 'white' }} navigation={navigation} posts={carouselPosts.slice(0, 4)} />
   <Button
           title='Toggle filter selector'
           onPress={() => {
@@ -90,7 +85,7 @@ const Home = (props) => {
 
   return (
     <SafeAreaProvider>
-      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} refresh={refresh} posts={listPosts} />
+      <NewsList ListHeaderComponent={carousel} style={{ height: 0 }} navigation={navigation} posts={listPosts} />
 
       <View style={styles.buttonView}>
         <Button
@@ -111,7 +106,7 @@ const Home = (props) => {
 
 
 
-      {isLoggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name, { refresh: refresh })} />}
+      {isLoggedIn && <Fab actions={actions} onPressItem={name => navigation.navigate(name)} />}
 
       <LoginModal
         visible={loginForm}

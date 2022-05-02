@@ -24,24 +24,23 @@ import Dialog from './modals/DialogModal';
 
 const Single = ({ route, navigation }) => {
   const [errorDialog, setErrorDialog] = useState('');
-  const { html, postId, refresh } = route.params;
+  const { html, postId } = route.params;
   console.log(convertIp(html))
 
   const visible = isVisible()
   const { isLoggedIn, update, setUpdate } = useContext(MainContext);
 
   const doDelete = async () => {
-    if (refresh != undefined) {
       const resp = await deletePost(postId)
 
       if (resp.error == undefined) {
-        refresh()
+        setUpdate(!update)
+        navigation.replace("Home")
       }
       else
       {
         setErrorDialog(resp.error)
       }
-    }
   }
 
 

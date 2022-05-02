@@ -5,7 +5,7 @@ import { isMounted, isVisible } from '../utils/visible';
 import { convertIp } from '../utils/debug';
 import Card from './card';
 
-const newsCarousel = ({ navigation, refresh, posts, style }) => {
+const newsCarousel = ({ navigation, posts, style }) => {
   const visible = isVisible()
   const mounted = isMounted()
   const [layout, setLayout] = useState({
@@ -55,7 +55,7 @@ const newsCarousel = ({ navigation, refresh, posts, style }) => {
         renderItem={({ item }) => {
           return (
             <Card
-              onPress={() => navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh })}
+              onPress={() => navigation.navigate('Detail', { html: item.html, postId: item.postId })}
               style={{ width: layout.width, marginHorizontal: Platform.OS == 'web' ? 1 : undefined }}
               contentContainerStyle={{ width: "100%", maxHeight: 400, alignSelf: "center" }}
               image={item.image}

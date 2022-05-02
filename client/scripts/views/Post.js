@@ -199,8 +199,7 @@ const Post = ({ navigation, route }) => {
       </KeyboardAvoidingView>
 
       <PreviewModal visible={publishSelectorState} html={revertIp(html)} transparent={true} onDone={(postSuccess) => {
-        setPublishSelectorState(false); if (postSuccess == true)  route.params?.refresh()
-      }} />
+        setPublishSelectorState(false); if (postSuccess == true)  {navigation.replace("Home")}}} />
       <Dialog
         visible={popupDialogContent.text != ""}
         text={popupDialogContent.text} buttons={html.length != 0 ? ["Cancel", "Yes"] : ["Ok"]}

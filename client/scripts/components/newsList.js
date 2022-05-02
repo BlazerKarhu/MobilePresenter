@@ -75,10 +75,13 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 30,
     color: 'white',
-    margin: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    backgroundColor: 'rgba(52, 52, 52, 0.5)',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     fontWeight: "400", textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10
+    textShadowRadius: 10,
+
   }
 });
 

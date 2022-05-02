@@ -62,7 +62,7 @@ const newsCarousel = ({ navigation, posts, style }) => {
             >
               <Text
                 style={styles.title}
-                onPress={() => { navigation.navigate('Detail', { html: item.html, postId: item.postId, refresh: refresh }) }}>
+                onPress={() => { navigation.navigate('Detail', { html: item.html, postId: item.postId }) }}>
                 {item.title}
               </Text>
             </Card>

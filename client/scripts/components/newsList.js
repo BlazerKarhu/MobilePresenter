@@ -72,9 +72,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "left",
-    textColor: "white",
     fontWeight: "400",
-    textPadding: 20,
     fontSize: 30,
     color: 'white',
     margin: 20
